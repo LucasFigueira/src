@@ -1,0 +1,644 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://xmlns.jcp.org/jstl/core">
+
+<h:head>
+	<h:outputScript library="javax.faces" name="jsf.js" target="head" />
+	<title>Alterar Ossada</title>
+	<style> /*<!--  ESTILO DO MAPA -->
+	Always set the map height explicitly to define the size of the div
+	       * element that contains the map. */
+#map {
+	height: 25%;
+}
+/* Optional: Makes the sample page fill the window. */
+html, body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+</style>
+
+
+	<link rel="stylesheet"
+		href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+
+
+	<link rel="stylesheet" href="estilo.css" />
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="arq.css" />
+
+</h:head>
+<body jsf:id="body">
+	<div class="navbar-wrapper">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-7 col-sm-7 logo">
+					<a style="margin-left: 100px;" href="pesquisaCorpos.xhtml"
+						title="PCDF - Polícia Civil do Distrito Federal"><img
+						src="logo-pcdf.png"
+						title="PCDF - Polícia Civil do Distrito Federal"
+						alt="PCDF - Polícia Civil do Distrito Federal" /></a>
+				</div>
+			</div>
+			<br />
+			<nav class="navbar navbar-default">
+				<div class="container-fluid">
+					<!-- Brand and toggle get grouped for better mobile display -->
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle collapsed"
+							data-toggle="collapse"
+							data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+							<span class="sr-only">Toggle navigation</span> <span
+								class="icon-bar"></span> <span class="icon-bar"></span> <span
+								class="icon-bar"></span>
+						</button>
+						<a class="navbar-brand" href="#">PCDF</a>
+					</div>
+
+					<div class="collapse navbar-collapse"
+						id="bs-example-navbar-collapse-1">
+						<ul class="nav navbar-nav">
+							<li jsf:rendered="#{loginController.usuario.isAdministrador()}"
+								class="dropdown"><a href="#" class="dropdown-toggle"
+								data-toggle="dropdown" role="button" aria-haspopup="true"
+								aria-expanded="false">Usuários <span class="caret"></span></a>
+								<ul class="dropdown-menu">
+									<li><a jsf:outcome="cadastrar?faces-redirect=true">Cadastro
+									</a></li>
+									<li role="separator" class="divider"></li>
+									<li><a jsf:outcome="lista.xhtml?faces-redirect=true">Listar</a></li>
+
+								</ul></li>
+						</ul>
+						<ul class="nav navbar-nav">
+							<li class="dropdown"><a href="#" class="dropdown-toggle"
+								data-toggle="dropdown" role="button" aria-haspopup="true"
+								aria-expanded="false">Corpos<span class="caret"></span></a>
+								<ul class="dropdown-menu">
+									<li jsf:rendered="#{loginController.usuario.isPerito()}"><a
+										jsf:outcome="cadastrarCorpos.xhtml?faces-redirect=true">Cadastro
+									</a></li>
+									<li role="separator" class="divider"></li>
+									<li><a href="pesquisaCorpos.xhtml">Busca</a></li>
+									<li
+										jsf:rendered="#{loginController.usuario.isPerito() or 
+											loginController.usuario.isUser()}"
+										role="separator" class="divider"></li>
+									<li
+										jsf:rendered="#{loginController.usuario.isPerito() or 
+											loginController.usuario.isUser()}"><a
+										href="listaCorposHistoricos.xhtml">Busca Historica</a></li>
+									<li jsf:rendered="#{loginController.usuario.isPerito()}"
+										role="separator" class="divider"></li>
+									<li
+										jsf:rendered="#{loginController.usuario.isPerito() or 
+											loginController.usuario.isUser()}"><a
+										href="listaCorposIdentificados.xhtml">Busca Identificados</a></li>
+								</ul></li>
+						</ul>
+						<ul class="nav navbar-nav">
+							<li class="dropdown"><a href="#" class="dropdown-toggle"
+								data-toggle="dropdown" role="button" aria-haspopup="true"
+								aria-expanded="false">Ossada<span class="caret"></span></a>
+								<ul class="dropdown-menu">
+									<li jsf:rendered="#{loginController.usuario.isPerito()}"><a
+										jsf:outcome="cadastrarOssada.xhtml?faces-redirect=true">Cadastro
+									</a></li>
+									<li role="separator" class="divider"></li>
+									<li><a href="listaOssada.xhtml">Busca</a></li>
+								</ul></li>
+						</ul>
+						<ul class="nav navbar-nav pull-right">
+
+							<button class="btn btn-outline-success my-2 my-sm-0"
+								type="button">
+								<li><form jsf:id="perfil">
+										<h:commandLink value="Perfil" styleClass="" id="viewTests"
+											action="#{loginController.carregaPerfil}" immediate="true">
+										</h:commandLink>
+									</form></li> <a href="j_spring_security_logout"> Logout</a> <span
+									class="glyphicon glyphicon-log-out"> </span>
+							</button>
+							<!-- /.container-fluid -->
+						</ul>
+
+					</div>
+
+					<!-- /.navbar-collapse -->
+				</div>
+				<!-- /.container-fluid -->
+			</nav>
+		</div>
+	</div>
+	<div class="col-md-12">
+		<div class="">
+			<ul class="breadcrumb">
+				<li class="active">Você está aqui:</li>
+				<li class="active"><span>Ossada > <a
+						jsf:outcome="listaOssada.xhtml?faces-redirect=true">Listar</a> >
+						Detalhar Ossada
+				</span></li>
+			</ul>
+		</div>
+		<div jsf:rendered="#{sessionOssadaController.hasMessageError()}">
+			<div class="alert alert-danger">
+
+				<h:messages>
+				</h:messages>
+			</div>
+		</div>
+		<div jsf:rendered="#{sessionOssadaController.hasMessageSuccess()}">
+			<div class="alert alert-success">
+				<h:messages>
+				</h:messages>
+			</div>
+		</div>
+	</div>
+	<form jsf:id="formCadastro" jsf:prependId="false"
+		enctype="multipart/form-data">
+		<h3 class="headerSign">Detalhamento da Ossada
+			Nº#{sessionOssadaController.ossadaAlteracao.codigoOssada}</h3>
+		<div class="col-md-offset-2">
+			<div class="row col-md-8 registeration">
+				<div class="registerInner">
+					<br> </br>
+					<div class="row">
+						<!--  <div class="col-md-12">-->
+						<div class="col-md-4">
+							<div class="form-group">
+								<label for="sel1">Altura:</label> <input name="altura"
+									type="text" disabled="true"
+									jsf:value="#{sessionOssadaController.ossadaAlteracao.altura}"
+									class="form-control" id="altura" />
+
+								<h:inputHidden name="altura" type="text"
+									value="#{sessionOssadaController.ossadaAux.altura}"
+									class="form-control" id="alturaAux" />
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="form-group">
+								<label for="sel1">Cor da pele:</label>
+								<!-- <select disabled="true"
+							class="form-control" id="corPele">
+							<option selected="true">#{sessionCorpoController.corpo.corPele}</option>
+						</select> -->
+								<h:selectOneMenu class="form-control" id="corPele"
+									value="#{requestOssadaController.ossada.tipoRacial}"
+									disabled="true">
+									<f:selectItem
+										itemLabel="#{sessionOssadaController.ossadaAlteracao.tipoRacial}"
+										itemValue="#{sessionOssadaController.ossadaAlteracao.tipoRacial}"></f:selectItem>
+									<f:selectItem itemLabel="Caucasiano Branco"
+										itemValue="Caucasiano Branco"></f:selectItem>
+									<f:selectItem itemLabel="Pardo" itemValue="Pardo"></f:selectItem>
+									<f:selectItem itemLabel="Negro" itemValue="Negro"></f:selectItem>
+									<f:selectItem itemLabel="Indefinido" itemValue="Indefinido"></f:selectItem>
+								</h:selectOneMenu>
+							</div>
+							<h:inputHidden name="corPele" type="text"
+								value="#{sessionOssadaController.ossadaAux.tipoRacial}"
+								class="form-control" id="corPeleAux" />
+						</div>
+						<div class="col-md-4">
+							<div class="form-group">
+								<label for="sel1">Peso:</label><input type="text"
+									disabled="true"
+									value="#{sessionOssadaController.ossadaAlteracao.peso}"
+									class="form-control" id="peso" />
+								<h:inputHidden name="peso" type="text"
+									value="#{sessionOssadaController.ossadaAux.peso}"
+									class="form-control" id="pesoAux" />
+							</div>
+						</div>
+						<!--  </div>-->
+					</div>
+					<div class="row">
+						<div class="col-md-4">
+							<!-- <div class="col-md-3"> -->
+							<div class="form-group">
+								<label for="sel1">Faixa Etária:</label>
+								<!-- <select disabled="true"
+							class="form-control" id="corPele">
+							<option selected="true">#{sessionCorpoController.corpo.corPele}</option>
+						</select> -->
+								<h:selectOneMenu class="form-control" id="faixaEtaria"
+									value="#{requestOssadaController.ossada.faixaEtaria}"
+									disabled="true">
+									<f:selectItem
+										itemLabel="#{sessionOssadaController.ossadaAlteracao.faixaEtaria}"
+										itemValue="#{sessionOssadaController.ossadaAlteracao.faixaEtaria}"></f:selectItem>
+									<f:selectItem itemLabel="Escolha" itemValue=""></f:selectItem>
+									<f:selectItem itemLabel="Crianca" itemValue="Crianca"></f:selectItem>
+									<f:selectItem itemLabel="Jovem" itemValue="Jovem"></f:selectItem>
+									<f:selectItem itemLabel="Adulto" itemValue="Adulto"></f:selectItem>
+									<f:selectItem itemLabel="Idoso" itemValue="Idoso"></f:selectItem>
+									<f:selectItem itemLabel="Indefinido" itemValue="Indefinido"></f:selectItem>
+								</h:selectOneMenu>
+
+								<h:inputHidden name="faixaEtaria" type="text"
+									value="#{sessionOssadaController.ossadaAux.faixaEtaria}"
+									class="form-control" id="faixaEtariaAux" />
+							</div>
+
+							<!--</div>  -->
+						</div>
+						<div>
+							<div class="col-md-4">
+								<label for="usr">Data Chegada:</label>
+								<div class="input-group">
+									<span class="input-group-addon">Data</span><input type="text"
+										disabled="true"
+										value="#{sessionOssadaController.ossadaAlteracao.dataChegada}"
+										class="form-control" id="dataChegada" /> <span
+										class="input-group-addon"><i
+										class="glyphicon glyphicon-calendar"></i></span>
+									<h:inputHidden name="dataChegada" type="text"
+										value="#{sessionOssadaController.ossadaAux.dataChegada}"
+										class="
+								form-control" id="dataChegadaAux" />
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<label for="usr">Horário:</label>
+							<div class="input-group">
+								<span class="input-group-addon">Hora</span><input type="text"
+									disabled="true"
+									value="#{sessionOssadaController.ossadaAlteracao.horarioChegada}"
+									class="form-control" id="horaChegada" />
+								<h:inputHidden name="dataChegada" type="text"
+									value="#{sessionOssadaController.ossadaAux.horarioChegada}"
+									class="form-control" id="horarioChegadaAux" />
+							</div>
+						</div>
+						<div class="col-md-12">
+							<div class="form-group">
+								<label for="selectOlhos">Sexo:</label>
+								<h:panelGroup id="search-options2" layout="block"
+									styleClass="radioButtonSpace">
+									<h:selectOneRadio style="margin-left:0px;"
+										value="#{sessionOssadaController.ossadaAlteracao.sexo}"
+										disabled="true" id="sexo">
+										<f:selectItem itemValue="Feminino" itemLabel="Feminino" />
+										<f:selectItem itemValue="Masculino" itemLabel="Masculino" />
+									</h:selectOneRadio>
+								</h:panelGroup>
+								<h:inputHidden name="sexo"
+									value="#{sessionOssadaController.ossadaAux.sexo}"
+									class="form-control" id="sexoAux" />
+							</div>
+						</div>
+						<div class="col-md-12">
+							<label for="sel1" style="padding-right: 10px;">Dentes
+								Permanentes:</label>
+							<h:panelGroup id="search-options1" layout="block"
+								styleClass="radioButtonSpace">
+								<h:selectOneRadio style="margin-left:0px;"
+									value="#{sessionOssadaController.ossadaAlteracao.estruturaDentaria}"
+									disabled="true" id="estrutura">
+									<f:selectItem itemValue="Permanentes" itemLabel="Permanentes" />
+									<f:selectItem itemValue="Deciduo" itemLabel="Deciduo" />
+								</h:selectOneRadio>
+							</h:panelGroup>
+
+							<h:inputHidden name="tattoo"
+								value="#{sessionOssadaController.ossadaAux.estruturaDentaria}"
+								class="form-control" id="permanentesAux" />
+						</div>
+						<br />
+					</div>
+
+
+					<div class="form-group">
+						<label for="sel1">Dentes Completos:</label>
+						<div class="row">
+							<div class="col-md-2">
+								<label for="sel1" style="padding-right: 10px;">Incisivos</label>
+								<h:selectBooleanCheckbox
+									selected="#{sessionOssadaController.dentesAuxiliar.incisivo}"
+									value="#{requestOssadaController.incisivos}" disabled="true"
+									id="incisivo" />
+
+								<h:inputHidden name="tattoo"
+									value="#{sessionOssadaController.dentesAux2.incisivo}"
+									class="form-control" id="incisivoAux" />
+							</div>
+							<div class="col-md-2">
+								<label for="sel1" style="padding-right: 10px;">Molares</label>
+								<h:selectBooleanCheckbox
+									selected="#{sessionOssadaController.dentesAuxiliar.molares}"
+									value="#{requestOssadaController.molares}" disabled="true"
+									id="tattooPeito" />
+
+								<h:inputHidden name="tattoo"
+									value="#{sessionOssadaController.dentesAux2.molares}"
+									class="form-control" id="tattooPeitoAux" />
+							</div>
+							<div class="col-md-2">
+								<label for="sel1" style="padding-right: 10px;">Canino</label>
+								<h:selectBooleanCheckbox
+									selected="#{sessionOssadaController.dentesAuxiliar.canino}"
+									value="#{requestOssadaController.canino}" disabled="true"
+									id="tattooCostas" />
+								<h:inputHidden name="tattoo"
+									value="#{sessionOssadaController.dentesAux2.canino}"
+									class="form-control" id="tattooCostasAux" />
+							</div>
+							<div class="col-md-2">
+								<label for="sel1" style="padding-right: 10px;">PreMolares</label>
+								<h:selectBooleanCheckbox
+									value="#{requestOssadaController.preMolares}"
+									selected="#{sessionOssadaController.dentesAuxiliar.premolares}"
+									disabled="true" id="tattooBraco" />
+
+								<h:inputHidden name="tattoo"
+									value="#{sessionOssadaController.dentesAux2.premolares}"
+									class="form-control" id="tattooBracoAux" />
+							</div>
+							<div class="col-md-2">
+								<label for="sel1" style="padding-right: 10px;">Siso</label>
+								<h:selectBooleanCheckbox
+									value="#{requestOssadaController.sisos}"
+									selected="#{sessionOssadaController.dentesAuxiliar.siso}"
+									disabled="true" id="tattooPerna" />
+
+								<h:inputHidden name="tattoo"
+									value="#{sessionOssadaController.dentesAux2.siso}"
+									class="form-control" id="tattooPernaAux" />
+							</div>
+						</div>
+					</div>
+
+					<!--              INICIO - MANIPULAÇÃO DO MAPA A PARTIR DA GOOGLE MAPS API                        -->
+
+					<label
+						jsf:rendered="#{sessionOssadaController.ossada.latitude != null}">Local
+						de Encontro da Ossada:</label>
+					<div id="map" style="border-top: 5px solid #2196f3"
+						jsf:rendered="#{sessionOssadaController.ossada.latitude != null}"></div>
+					<script>
+						function initMap() {
+
+							var loc = new google.maps.LatLng(
+									document.getElementById('latitudeAux').value,
+									document.getElementById('longitudeAux').value);
+
+							var map = new google.maps.Map(
+									document.getElementById('map'),
+									{
+										zoom : 12,
+										center : loc,
+										mapTypeControl : true,
+										mapTypeControlOptions : {
+											style : google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+											position : google.maps.ControlPosition.TOP_CENTER
+										},
+										zoomControl : true,
+										zoomControlOptions : {
+											position : google.maps.ControlPosition.LEFT_CENTER
+										},
+										scaleControl : true,
+										streetViewControl : true,
+										streetViewControlOptions : {
+											position : google.maps.ControlPosition.LEFT_TOP
+										},
+										fullscreenControl : true
+									});
+							var marker = new google.maps.Marker({
+								position : loc,
+								map : map
+							});
+
+						}
+					</script>
+					<script
+						src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCkcNmGwThTMfZ7TAkOXgs-a-hp0OJpTSw&amp;callback=initMap"
+						async="" defer=""></script>
+					<h:inputHidden name="latitude" type="text"
+						value="#{sessionOssadaController.ossada.latitude}"
+						class="form-control" id="latitudeAux" />
+					<h:inputHidden name="longitude" type="text"
+						value="#{sessionOssadaController.ossada.longitude}"
+						class="form-control" id="longitudeAux" />
+					<h:outputText
+						style="font-weight: bold; display: block; visibility: hidden;"
+						escape="false" value="Quebra Linha" />
+
+					<!--               FIM - MANIPULAÇÃO DO MAPA A PARTIR DA GOOGLE MAPS API                          -->
+
+
+					<div class="row">
+						<div class="col-md-12" style="margin-bottom: 40px;">
+							<label for="comment">Observação:</label>
+							<textarea disabled="true" class="form-control" rows="5"
+								id="descricao">#{sessionOssadaController.ossada.descricao}</textarea>
+
+							<h:inputHidden name="descricao" type="text"
+								value="#{sessionOssadaController.ossadaAux.descricao}"
+								class="form-control" id="descricaoAux" />
+						</div>
+					</div>
+					<button type="button" id="btnExibeOculta" class=" btn active"
+						onclick="ocultarExibir();">Exibir/Ocultar Imagens</button>
+
+
+					<br> </br>
+
+
+					<div id="dvCentro" class="wrapper" style="margin-bottom: 60px;">
+						<div id="dvConteudo" class="scroll">
+							<!-- Div na qual vamos manipular.-->
+							<div class="container">
+								<div class="row">
+									<ui:repeat var="dirr"
+										value="#{sessionOssadaController.diretorio}" size="3"
+										varStatus="status">
+
+										<div id="#{status.index}"
+											class="imagem#{status.index} col-md-4" data-toggle="modal"
+											data-target="##{status.index}a">
+											<img
+												src="#{sessionOssadaController.diretorio.get(status.index)}"
+												id="imagem#{status.index}" alt="Imagem 1"
+												class="img-thumbnail" width="300" height="300" />
+										</div>
+										<div class="modal fade" id="#{status.index}a" tabindex="-1"
+											role="dialog" aria-labelledby="exampleModalCenterTitle"
+											aria-hidden="true">
+											<div class="modal-dialog modal-dialog-centered"
+												role="document">
+												<div class="modal-content">
+													<div class="modal-header">
+														<h5 class="modal-title" id="exampleModalLongTitle">Modal
+															title</h5>
+														<button type="button" class="close" data-dismiss="modal"
+															aria-label="Close">
+															<span aria-hidden="true"> </span>
+														</button>
+													</div>
+													<div class="modal-body">
+														<img
+															src="#{sessionOssadaController.diretorio.get(status.index)}"
+															alt="Imagem 1" class="img-thumbnail" />
+													</div>
+												</div>
+											</div>
+										</div>
+									</ui:repeat>
+
+								</div>
+								<br> </br>
+								<div class="row">
+									<ui:repeat var="dirr"
+										value="#{sessionOssadaController.diretorio}"
+										varStatus="status" size="6" offset="3">
+										<div id="#{status.index}"
+											class="imagem#{status.index} col-md-4" data-toggle="modal"
+											data-target="##{status.index}b">
+											<img
+												src="#{sessionOssadaController.diretorio.get(status.index)}"
+												id="imagem#{status.index}" alt="Imagem 1"
+												class="img-thumbnail" width="300" height="300" />
+										</div>
+										<div class="modal fade" id="#{status.index}b" tabindex="-1"
+											role="dialog" aria-labelledby="exampleModalCenterTitle"
+											aria-hidden="true">
+											<div class="modal-dialog modal-dialog-centered"
+												role="document">
+												<div class="modal-content">
+													<div class="modal-header">
+														<h5 class="modal-title" id="exampleModalLongTitle">Modal
+															title</h5>
+														<button type="button" class="close" data-dismiss="modal"
+															aria-label="Close">
+															<span aria-hidden="true"> </span>
+														</button>
+													</div>
+													<div class="modal-body">
+														<img
+															src="#{sessionOssadaController.diretorio.get(status.index)}"
+															alt="Imagem 1" class="img-thumbnail" />
+													</div>
+												</div>
+											</div>
+										</div>
+
+									</ui:repeat>
+								</div>
+								<br> </br>
+								<div class="row">
+									<ui:repeat var="dirr"
+										value="#{sessionOssadaController.diretorio}"
+										varStatus="status" size="9" offset="6">
+										<div id="#{status.index}"
+											class="imagem#{status.index} col-md-4" data-toggle="modal"
+											data-target="##{status.index}c">
+											<img
+												src="#{sessionOssadaController.diretorio.get(status.index)}"
+												id="imagem#{status.index}" alt="Imagem 1"
+												class="img-thumbnail" width="300" height="300" />
+										</div>
+										<div class="modal fade" id="#{status.index}c" tabindex="-1"
+											role="dialog" aria-labelledby="exampleModalCenterTitle"
+											aria-hidden="true">
+											<div class="modal-dialog modal-dialog-centered"
+												role="document">
+												<div class="modal-content">
+													<div class="modal-header">
+														<h5 class="modal-title" id="exampleModalLongTitle">Modal
+															title</h5>
+														<button type="button" class="close" data-dismiss="modal"
+															aria-label="Close">
+															<span aria-hidden="true"> </span>
+														</button>
+													</div>
+													<div class="modal-body">
+														<img
+															src="#{sessionOssadaController.diretorio.get(status.index)}"
+															alt="Imagem 1" class="img-thumbnail" />
+													</div>
+												</div>
+											</div>
+										</div>
+									</ui:repeat>
+								</div>
+							</div>
+						</div>
+					</div>
+					<button type="button" id="alterar" class="btn active"
+						onclick="alterarOssada()">Alterar</button>
+					<button type="submit" id="simIdent"
+						jsf:action="#{sessionOssadaController.gerarPDF()}"
+						class="btn btn-danger"
+						style="align-items: float: right; float: right;">Gerar
+						PDF</button>
+
+
+					<button type="button" id="confirmar" data-target="#confirm-alter"
+						data-toggle="modal" onclick="confirmarAlteracao();"
+						class="disp btn btn-success">Confirmar Alteração</button>
+					<div class="row">
+						<div class="modal fade" id="errado" role="dialog"
+							aria-hidden="true">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">Alterar Ossada</div>
+									<div class="modal-body">Não é possível cadastrar
+										alterações! Todos os campos estão iguais!</div>
+									<div class="modal-footer">
+
+										<button type="button" data-dismiss="modal"
+											class="btn btn-danger" id="delete">Fechar</button>
+
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="modal fade" id="certo" role="dialog"
+							aria-hidden="true">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">Alterar Ossada?</div>
+									<div class="modal-body">Deseja realmente alterar esta
+										ossada?</div>
+									<div class="modal-footer">
+										<button type="button" data-dismiss="modal"
+											class="btn btn-danger" id="delete">Cancelar</button>
+										<button type="submit"
+											jsf:action="#{sessionOssadaController.alterar()}"
+											class="btn btn-primary">Alterar</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="modal fade" id="errado" role="dialog"
+							aria-hidden="true">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">Alterar Ossada</div>
+									<div class="modal-body">Não é possível cadastrar
+										alterações! Todos os campos estão iguais!</div>
+									<div class="modal-footer"></div>
+
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+</body>
+<script src="val2.js"></script>
+</html>

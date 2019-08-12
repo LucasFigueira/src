@@ -1,0 +1,748 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<head>
+
+<title>Cadastrar Corpo</title>
+
+<!--  ESTILO DO MAPA -->
+
+<style> /*
+Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+#map {
+	height: 25%;
+}
+/* Optional: Makes the sample page fill the window. */
+html, body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+.controls {
+	margin-top: 10px;
+	border: 1px solid transparent;
+	border-radius: 2px 0 0 2px;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	height: 32px;
+	outline: none;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+#pac-input {
+	background-color: #fff;
+	font-family: Roboto;
+	font-size: 15px;
+	font-weight: 300;
+	margin-left: 12px;
+	padding: 0 11px 0 13px;
+	text-overflow: ellipsis;
+	width: 300px;
+}
+
+#pac-input:focus {
+	border-color: #4d90fe;
+}
+
+.pac-container {
+	font-family: Roboto;
+}
+
+#type-selector {
+	color: #fff;
+	background-color: #4d90fe;
+	padding: 5px 11px 0px 11px;
+}
+
+#type-selector label {
+	font-family: Roboto;
+	font-size: 13px;
+	font-weight: 300;
+}
+
+#target {
+	width: 345px;
+}
+</style>
+
+<!-- FIM ESTILO DO MAPA -->
+
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+<link rel="stylesheet" href="estilo.css" />
+<link rel="stylesheet" href="estilo2.css" />
+<link rel="stylesheet" href="arqCadastrarCorpos.css" />
+<link rel="stylesheet"
+	href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
+
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+	$(function() {
+		$("#datepicker").datepicker(
+				{
+					dateFormat : 'dd/mm/yy',
+					dayNames : [ 'Domingo', 'Segunda', 'Terça', 'Quarta',
+							'Quinta', 'Sexta', 'Sábado' ],
+					dayNamesMin : [ 'D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D' ],
+					dayNamesShort : [ 'Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex',
+							'Sáb', 'Dom' ],
+					monthNames : [ 'Janeiro', 'Fevereiro', 'Março', 'Abril',
+							'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro',
+							'Outubro', 'Novembro', 'Dezembro' ],
+					monthNamesShort : [ 'Jan', 'Fev', 'Mar', 'Abr', 'Mai',
+							'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez' ],
+					nextText : 'Próximo',
+					prevText : 'Anterior'
+				});
+	});
+</script>
+
+</head>
+
+
+<body jsf:id="body">
+	<div class="navbar-wrapper">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-7 col-sm-7 logo">
+					<a style="margin-left: 100px;" href=""
+						title="PCDF - Polícia Civil do Distrito Federal"><img
+						src="logo-pcdf.png"
+						title="PCDF - Polícia Civil do Distrito Federal"
+						alt="PCDF - Polícia Civil do Distrito Federal" /></a>
+				</div>
+
+			</div>
+			<br />
+			<nav class="navbar navbar-default">
+				<div class="container-fluid">
+					<div class="top-content">
+						<div class="row"></div>
+					</div>
+					<!-- Brand and toggle get grouped for better mobile display -->
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle collapsed"
+							data-toggle="collapse"
+							data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+							<span class="sr-only">Toggle navigation</span> <span
+								class="icon-bar"></span> <span class="icon-bar"></span> <span
+								class="icon-bar"></span>
+						</button>
+						<a class="navbar-brand" href="#">PCDF</a>
+					</div>
+
+					<div class="collapse navbar-collapse"
+						id="bs-example-navbar-collapse-1">
+						<ul class="nav navbar-nav">
+							<li jsf:rendered="#{loginController.usuario.isAdministrador()}"
+								class="dropdown"><a href="#" class="dropdown-toggle"
+								data-toggle="dropdown" role="button" aria-haspopup="true"
+								aria-expanded="false">Usuários <span class="caret"></span></a>
+								<ul class="dropdown-menu">
+									<li><a jsf:outcome="cadastrar?faces-redirect=true">Cadastro
+									</a></li>
+									<li role="separator" class="divider"></li>
+									<li><a jsf:outcome="lista.xhtml?faces-redirect=true">Listar</a></li>
+								</ul></li>
+						</ul>
+						<ul class="nav navbar-nav">
+							<li class="dropdown"><a href="#" class="dropdown-toggle"
+								data-toggle="dropdown" role="button" aria-haspopup="true"
+								aria-expanded="false">Corpos<span class="caret"></span></a>
+								<ul class="dropdown-menu">
+									<li jsf:rendered="#{loginController.usuario.isPerito()}"><a
+										jsf:outcome="cadastrarCorpos.xhtml?faces-redirect=true">Cadastro
+									</a></li>
+									<li role="separator" class="divider"></li>
+									<li><a href="pesquisaCorpos.xhtml">Busca</a></li>
+									<li
+										jsf:rendered="#{loginController.usuario.isPerito() or 
+											loginController.usuario.isUser()}"
+										role="separator" class="divider"></li>
+									<li
+										jsf:rendered="#{loginController.usuario.isPerito() or 
+											loginController.usuario.isUser()}"><a
+										href="listaCorposHistoricos.xhtml">Busca Historica</a></li>
+									<li jsf:rendered="#{loginController.usuario.isPerito()}"
+										role="separator" class="divider"></li>
+									<li
+										jsf:rendered="#{loginController.usuario.isPerito() or 
+											loginController.usuario.isUser()}"><a
+										href="listaCorposIdentificados.xhtml">Busca Identificados</a></li>
+								</ul></li>
+						</ul>
+						<ul class="nav navbar-nav">
+							<li class="dropdown"
+								jsf:rendered="#{loginController.usuario.isPerito()}"><a
+								href="#" class="dropdown-toggle" data-toggle="dropdown"
+								role="button" aria-haspopup="true" aria-expanded="false">Ossada<span
+									class="caret"></span></a>
+								<ul class="dropdown-menu">
+									<li jsf:rendered="#{loginController.usuario.isPerito()}"><a
+										jsf:outcome="cadastrarOssada.xhtml?faces-redirect=true">Cadastro
+									</a></li>
+									<li role="separator" class="divider"></li>
+									<li jsf:rendered="#{loginController.usuario.isPerito()}"><a
+										href="listaOssada.xhtml">Busca</a></li>
+								</ul></li>
+						</ul>
+						<ul class="nav navbar-nav pull-right">
+
+							<button class="btn btn-outline-success my-2 my-sm-0"
+								type="button">
+								<li><form jsf:id="perfil">
+										<h:commandLink value="Perfil" styleClass="" id="viewTests"
+											action="#{loginController.carregaPerfil}" immediate="true">
+										</h:commandLink>
+									</form></li> <a href="j_spring_security_logout"> Logout</a> <span
+									class="glyphicon glyphicon-log-out"> </span>
+							</button>
+							<!-- /.container-fluid -->
+						</ul>
+					</div>
+					<!-- /.navbar-collapse -->
+
+				</div>
+
+				<!-- /.container-fluid -->
+			</nav>
+			<div class="col-md-12">
+				<div class="">
+					<ul class="breadcrumb">
+						<li class="active">Você está aqui:</li>
+						<li class="active"><span>Corpos > Cadastro</span></li>
+					</ul>
+				</div>
+				<div jsf:rendered="#{usuarioController.hasMessageError()}">
+					<div jsf:rendered="#{not empty facesContext.messageList}"
+						class="alert alert-danger">
+						<h:messages>
+						</h:messages>
+					</div>
+				</div>
+				<div jsf:rendered="#{usuarioController.hasMessageSuccess()}">
+					<div jsf:rendered="#{not empty facesContext.messageList}"
+						class="alert alert-success">
+						<h:messages>
+						</h:messages>
+					</div>
+				</div>
+			</div>
+
+
+			<form jsf:id="formCadastro" jsf:prependId="false"
+				enctype="multipart/form-data">
+				<h2 class="headerSign">Cadastrar Corpo</h2>
+				<div class="row col-md-8 col-md-offset-2 registeration">
+					<div class="registerInner">
+						<div class="row">
+							<div class="col-md-4">
+								<div class="form-group">
+									<label for="sel1">Altura:</label> <input name="altura"
+										placeholder="Altura Ex: 1.80" id="altura" type="text"
+										class="form-control"
+										jsf:value="#{requestCorpoController.corpo.altura}" />
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label for="selectPele">Tipo do Cabelo:</label>
+									<h:selectOneMenu class="form-control" id="selectTipoCabelo"
+										value="#{requestCorpoController.corpo.tipoCabelo}">
+										<f:selectItem itemLabel="Escolha" itemValue=""></f:selectItem>
+										<f:selectItem itemLabel="Liso" itemValue="Liso"></f:selectItem>
+										<f:selectItem itemLabel="Ondulado" itemValue="Ondulado"></f:selectItem>
+										<f:selectItem itemLabel="Cacheado" itemValue="Cacheado"></f:selectItem>
+										<f:selectItem itemLabel="Crespo" itemValue="Crespo"></f:selectItem>
+										<f:selectItem itemLabel="Indefinido" itemValue="Indefinido"></f:selectItem>
+									</h:selectOneMenu>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label for="selectPele">Cor do Cabelo:</label>
+									<h:selectOneMenu class="form-control" id="selectCabelo"
+										value="#{requestCorpoController.corpo.corCabelo}">
+										<f:selectItem itemLabel="Escolha" itemValue=""></f:selectItem>
+										<f:selectItem itemLabel="Calvo" itemValue="Calvo"></f:selectItem>
+										<f:selectItem itemLabel="Grisalho" itemValue="Grisalho"></f:selectItem>
+										<f:selectItem itemLabel="Loiro" itemValue="Loiro"></f:selectItem>
+										<f:selectItem itemLabel="Preto" itemValue="Preto"></f:selectItem>
+										<f:selectItem itemLabel="Ruivo" itemValue="Ruivo"></f:selectItem>
+										<f:selectItem itemLabel="Indefinido" itemValue="Indefinido"></f:selectItem>
+									</h:selectOneMenu>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-4">
+								<div class="form-group">
+									<label for="sel1">Faixa Etária:</label>
+									<h:selectOneMenu class="form-control" id="selectFaixa"
+										value="#{requestCorpoController.corpo.faixaEtaria}">
+										<f:selectItem itemLabel="Escolha" itemValue=""></f:selectItem>
+										<f:selectItem itemLabel="Crianca" itemValue="Crianca"></f:selectItem>
+										<f:selectItem itemLabel="Jovem" itemValue="Jovem"></f:selectItem>
+										<f:selectItem itemLabel="Adulto" itemValue="Adulto"></f:selectItem>
+										<f:selectItem itemLabel="Idoso" itemValue="Idoso"></f:selectItem>
+										<f:selectItem itemLabel="Indefinido" itemValue="Indefinido"></f:selectItem>
+									</h:selectOneMenu>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label for="sel1">Data Chegada:</label>
+									<div class="input-group">
+										<input type="text" placeholder="00/00/0000"
+											class="form-control" id="datepicker"
+											jsf:value="#{requestCorpoController.corpo.dataChegada}" /> <span
+											class="input-group-addon"><i
+											class="glyphicon glyphicon-calendar"></i></span>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label for="sel1">Horário:</label> <input name="horario"
+										placeholder="00:00" id="horario" type="text"
+										class="form-control"
+										jsf:value="#{requestCorpoController.corpo.horarioChegada}" />
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-4">
+								<div class="form-group">
+									<label for="selectOlhos">Cor dos Olhos:</label>
+									<h:selectOneMenu class="form-control" id="selectOlhos"
+										value="#{requestCorpoController.corpo.corOlhos}">
+										<f:selectItem itemLabel="Escolha" itemValue=""></f:selectItem>
+										<f:selectItem itemLabel="Azuis" itemValue="Azuis"></f:selectItem>
+										<f:selectItem itemLabel="Castanhos" itemValue="Castanhos"></f:selectItem>
+										<f:selectItem itemLabel="Pretos" itemValue="Pretos"></f:selectItem>
+										<f:selectItem itemLabel="Verdes" itemValue="Verdes"></f:selectItem>
+										<f:selectItem itemLabel="Indefinido" itemValue="Indefinido"></f:selectItem>
+									</h:selectOneMenu>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label for="selectPele">Cor de Pele:</label>
+									<h:selectOneMenu class="form-control" id="selectPele"
+										value="#{requestCorpoController.corpo.corPele}">
+										<f:selectItem itemLabel="Escolha" itemValue=""></f:selectItem>
+										<f:selectItem itemLabel="Amarelo" itemValue="Amarelo"></f:selectItem>
+										<f:selectItem itemLabel="Caucasiano" itemValue="Caucasiano"></f:selectItem>
+										<f:selectItem itemLabel="Negro" itemValue="Negro"></f:selectItem>
+										<f:selectItem itemLabel="Pardo" itemValue="Pardo"></f:selectItem>
+										<f:selectItem itemLabel="Indefinido" itemValue="Indefinido"></f:selectItem>
+									</h:selectOneMenu>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label for="sel1">Peso:</label> <input name="peso"
+										placeholder="Peso Ex: 54" id="peso" type="text"
+										class="form-control"
+										jsf:value="#{requestCorpoController.corpo.peso}" />
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-3">
+								<div class="form-group">
+									<label for="selectSexo">Sexo:</label>
+									<h:panelGroup id="search-options" layout="block"
+										styleClass="radioButtonSpace">
+										<h:selectOneRadio value="#{requestCorpoController.corpo.sexo}">
+											<f:selectItem itemValue="Feminino" itemLabel="Feminino" />
+											<f:selectItem itemValue="Masculino" itemLabel="Masculino" />
+										</h:selectOneRadio>
+									</h:panelGroup>
+								</div>
+							</div>
+						</div>
+						<div class="">
+							<div class="form-group">
+								<label for="sel1">Tatuagens:</label>
+								<div class="row">
+									<div class="col-md-2">
+										<label for="sel1" style="padding-right: 10px;">Rosto</label>
+										<h:selectBooleanCheckbox
+											value="#{requestCorpoController.tattoRosto}" />
+									</div>
+									<div class="col-md-2">
+										<label for="sel1" style="padding-right: 10px;">Peito</label>
+										<h:selectBooleanCheckbox
+											value="#{requestCorpoController.tattoPeito}" />
+									</div>
+									<div class="col-md-2">
+										<label for="sel1" style="padding-right: 10px;">Costas</label>
+										<h:selectBooleanCheckbox
+											value="#{requestCorpoController.tattoCostas}" />
+									</div>
+									<div class="col-md-2">
+										<label for="sel1" style="padding-right: 10px;">Braco</label>
+										<h:selectBooleanCheckbox
+											value="#{requestCorpoController.tattoBraco}" />
+									</div>
+									<div class="col-md-2">
+										<label for="sel1" style="padding-right: 10px;">Perna</label>
+										<h:selectBooleanCheckbox
+											value="#{requestCorpoController.tattoPerna}" />
+									</div>
+									<div class="col-md-2">
+										<label for="sel1" style="padding-right: 10px;">Pé</label>
+										<h:selectBooleanCheckbox
+											value="#{requestCorpoController.tattoPe}" />
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="">
+							<div class="form-group">
+								<label for="sel1">Cicatriz:</label>
+								<div class="row">
+									<div class="col-md-2">
+										<label for="sel1" style="padding-right: 10px;">Rosto</label>
+										<h:selectBooleanCheckbox
+											value="#{requestCorpoController.cicatrizRosto}" />
+									</div>
+									<div class="col-md-2">
+										<label for="sel1" style="padding-right: 10px;">Peito</label>
+										<h:selectBooleanCheckbox
+											value="#{requestCorpoController.cicatrizPeito}" />
+									</div>
+									<div class="col-md-2">
+										<label for="sel1" style="padding-right: 10px;">Costas</label>
+										<h:selectBooleanCheckbox
+											value="#{requestCorpoController.cicatrizCostas}" />
+									</div>
+									<div class="col-md-2">
+										<label for="sel1" style="padding-right: 10px;">Braco</label>
+										<h:selectBooleanCheckbox
+											value="#{requestCorpoController.cicatrizBraco}" />
+									</div>
+									<div class="col-md-2">
+										<label for="sel1" style="padding-right: 10px;">Perna</label>
+										<h:selectBooleanCheckbox
+											value="#{requestCorpoController.cicatrizPerna}" />
+									</div>
+									<div class="col-md-2">
+										<label for="sel1" style="padding-right: 10px;">Pé</label>
+										<h:selectBooleanCheckbox
+											value="#{requestCorpoController.cicatrizPe}" />
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!--              INICIO - MANIPULAÇÃO DO MAPA A PARTIR DA GOOGLE MAPS API                 -->
+
+						<label for="local1">Local de Encontro do Corpo:</label> <input
+							id="pac-input" class="controls" type="text" placeholder="Busca" />
+						<div id="map" style="border-top: 5px solid #2196f3"></div>
+						<script>
+							var markerCorpo;
+
+							function initMap() {
+
+								var map = new google.maps.Map(
+										document.getElementById('map'),
+										{
+											zoom : 12,
+											center : {
+												lat : -15.7942287,
+												lng : -47.8821658
+											},
+											mapTypeControl : true,
+											mapTypeControlOptions : {
+												style : google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+												position : google.maps.ControlPosition.TOP_CENTER
+											},
+											zoomControl : true,
+											zoomControlOptions : {
+												position : google.maps.ControlPosition.LEFT_CENTER
+											},
+											scaleControl : true,
+											streetViewControl : true,
+											streetViewControlOptions : {
+												position : google.maps.ControlPosition.LEFT_TOP
+											},
+											fullscreenControl : true
+										});
+
+								// Create the search box and link it to the UI element.
+								var input = document
+										.getElementById('pac-input');
+								var searchBox = new google.maps.places.SearchBox(
+										input);
+								map.controls[google.maps.ControlPosition.TOP_LEFT]
+										.push(input);
+
+								// Bias the SearchBox results towards current map's viewport.
+								map.addListener('bounds_changed', function() {
+									searchBox.setBounds(map.getBounds());
+								});
+
+								var markers = [];
+								// Listen for the event fired when the user selects a prediction and retrieve
+								// more details for that place.
+								searchBox
+										.addListener(
+												'places_changed',
+												function() {
+													var places = searchBox
+															.getPlaces();
+
+													if (places.length == 0) {
+														return;
+													}
+
+													// For each place, get the icon, name and location.
+													var bounds = new google.maps.LatLngBounds();
+													places
+															.forEach(function(
+																	place) {
+																if (!place.geometry) {
+																	console
+																			.log("Returned place contains no geometry");
+																	return;
+																}
+
+																if (place.geometry.viewport) {
+																	// Only geocodes have viewport.
+																	bounds
+																			.union(place.geometry.viewport);
+																} else {
+																	bounds
+																			.extend(place.geometry.location);
+																}
+															});
+													map.fitBounds(bounds);
+												});
+
+								// This event listener calls addMarker() when the map is clicked.
+								google.maps.event
+										.addListener(
+												map,
+												'click',
+												function(event) {
+													addMarker(event.latLng, map);
+													document
+															.getElementById('latitudeAux').value = event.latLng
+															.lat();
+													document
+															.getElementById('longitudeAux').value = event.latLng
+															.lng();
+												});
+
+							}
+
+							function addMarker(location, map) {
+								// Add the marker at the clicked location, and add the next-available label
+								// from the array of alphabetical characters.
+
+								if (markerCorpo != null) {
+									markerCorpo.setMap(null);
+								}
+								var marker = new google.maps.Marker({
+									animation : google.maps.Animation.DROP,
+									position : location,
+									map : map
+								});
+
+								markerCorpo = marker;
+
+								google.maps.event.addListener(marker, 'click',
+										function(event) {
+											marker.setMap(null);
+										});
+							}
+						</script>
+						<script
+							src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA0sPiAppfDEK8zpFRtc5IDkLoOHclvZXc&amp;libraries=places&amp;callback=initMap"
+							async="" defer=""></script>
+						<h:inputHidden name="latitude" type="text"
+							value="#{requestCorpoController.corpo.latitude}"
+							class="form-control" id="latitudeAux" />
+						<h:inputHidden name="longitude" type="text"
+							value="#{requestCorpoController.corpo.longitude}"
+							class="form-control" id="longitudeAux" />
+
+						<!--               FIM - MANIPULAÇÃO DO MAPA A PARTIR DA GOOGLE MAPS API                   -->
+
+
+						<h:outputText
+							style="font-weight: bold; display: block; visibility: hidden;"
+							escape="false" value="Quebra Linha" />
+						<div class="row">
+							<div class="col-md-12">
+								<div class="form-group">
+									<label for="sel1">Destino do Corpo:</label> <input
+										name="destino" placeholder="Destino Ex: Enviado ao IML"
+										id="destino" type="text" class="form-control"
+										jsf:value="#{requestCorpoController.corpo.destino}" />
+								</div>
+							</div>
+						</div>
+
+						<div class="col-md-10">
+							<div class="">
+								<label for="img1">Adicionar Imagens do Corpo</label>
+							</div>
+							<div class="col-md-10">
+								<h:selectBooleanCheckbox
+									value="#{requestCorpoController.semImgPrincipal}" id="noneImg" />
+								<label for="sel1" style="padding-right: 10px;">Sem
+									Imagem Principal</label>
+								<hr></hr>
+							</div>
+							<div class="col-md-10">
+								<h:outputLabel value="Imagem 1:" for="arq1" />
+								<h:inputFile id="arq1" value="#{requestCorpoController.arq1}"
+									required="false" label="arq1" />
+								<h:selectBooleanCheckbox value="#{requestCorpoController.img1}"
+									id="img1" />
+								<label for="sel1" style="padding-right: 10px;">Imagem
+									Principal</label>
+								<hr></hr>
+							</div>
+
+							<div id="imagenzinha2" class="uploadimghidden col-md-10">
+								<h:outputLabel value="Imagem 2:" for="arq2" />
+								<h:inputFile id="arq2" value="#{requestCorpoController.arq2}"
+									required="false" label="arq2" />
+								<h:selectBooleanCheckbox value="#{requestCorpoController.img2}"
+									id="img2" />
+								<label for="sel1" style="padding-right: 10px;">Imagem
+									Principal</label>
+								<hr></hr>
+							</div>
+							<div id="imagenzinha3" class="uploadimghidden col-md-10">
+								<h:outputLabel value="Imagem 3:" for="arq3" />
+								<h:inputFile id="arq3" value="#{requestCorpoController.arq3}"
+									required="false" label="arq3" />
+								<h:selectBooleanCheckbox value="#{requestCorpoController.img3}"
+									id="img3" />
+								<label for="sel1" style="padding-right: 10px;">Imagem
+									Principal</label>
+								<hr></hr>
+							</div>
+							<div id="imagenzinha4" class="uploadimghidden col-md-10">
+								<h:outputLabel value="Imagem 4:" for="arq4" />
+								<h:inputFile id="arq4" value="#{requestCorpoController.arq4}"
+									required="false" label="arq4" />
+								<h:selectBooleanCheckbox value="#{requestCorpoController.img4}"
+									id="img4" />
+								<label for="sel1" style="padding-right: 10px;">Imagem
+									Principal</label>
+								<hr></hr>
+							</div>
+							<div id="imagenzinha5" class="uploadimghidden col-md-10">
+								<h:outputLabel value="Imagem 5:" for="arq5" />
+								<h:inputFile id="arq5" value="#{requestCorpoController.arq5}"
+									required="false" label="arq5" />
+								<h:selectBooleanCheckbox value="#{requestCorpoController.img5}"
+									id="img5" />
+								<label for="sel1" style="padding-right: 10px;">Imagem
+									Principal</label>
+								<hr></hr>
+							</div>
+							<div id="imagenzinha6" class="uploadimghidden col-md-10">
+								<h:outputLabel value="Imagem 6:" for="arq6" />
+								<h:inputFile id="arq6" value="#{requestCorpoController.arq6}"
+									required="false" label="arq6" />
+								<h:selectBooleanCheckbox value="#{requestCorpoController.img6}"
+									id="img6" />
+								<label for="sel1" style="padding-right: 10px;">Imagem
+									Principal</label>
+								<hr></hr>
+							</div>
+							<div id="imagenzinha7" class="uploadimghidden col-md-10">
+								<h:outputLabel value="Imagem 7:" for="arq7" />
+								<h:inputFile id="arq7" value="#{requestCorpoController.arq7}"
+									required="false" label="arq7" />
+								<h:selectBooleanCheckbox value="#{requestCorpoController.img7}"
+									id="img7" />
+								<label for="sel1" style="padding-right: 10px;">Imagem
+									Principal</label>
+								<hr></hr>
+							</div>
+							<div id="imagenzinha8" class="uploadimghidden col-md-10">
+								<h:outputLabel value="Imagem 8:" for="arq8" />
+								<h:inputFile id="arq8" value="#{requestCorpoController.arq8}"
+									required="false" label="arq8" />
+								<h:selectBooleanCheckbox value="#{requestCorpoController.img8}"
+									id="img8" />
+								<label for="sel1" style="padding-right: 10px;">Imagem
+									Principal</label>
+								<hr></hr>
+							</div>
+							<div id="imagenzinha9" class="uploadimghidden col-md-10">
+								<h:outputLabel value="Imagem 9:" for="arq9" />
+								<h:inputFile id="arq9" value="#{requestCorpoController.arq9}"
+									required="false" label="arq9" />
+								<h:selectBooleanCheckbox value="#{requestCorpoController.img9}"
+									id="img9" />
+								<label for="sel1" style="padding-right: 10px;">Imagem
+									Principal</label>
+								<hr></hr>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-12">
+								<div class="form-group">
+									<label for="sel1">Observações:</label>
+									<textarea class="form-control" rows="5" id="comment"
+										jsf:value="#{requestCorpoController.corpo.descricao}"></textarea>
+								</div>
+							</div>
+						</div>
+						<input type="text" disabled="true" value="0"
+							class="form-control disp" id="identificado" />
+
+					</div>
+
+					<button class="btn btn-primary" data-toggle="modal" type="button"
+						data-target="#confirm-delete" style="width: 100%;">
+						Cadastrar</button>
+
+					<div class="modal fade" id="confirm-delete" role="dialog"
+						aria-hidden="true">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">Cadastrar Corpo</div>
+								<div class="modal-body">Deseja realmente cadastrar este
+									corpo?</div>
+								<div class="modal-footer">
+									<button type="button" data-dismiss="modal"
+										class="btn btn-danger" id="delete">Cancelar</button>
+									<button type="submit"
+										jsf:action="#{requestCorpoController.cadastrar()}"
+										class="btn btn-primary">Cadastrar</button>
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+				</div>
+			</form>
+
+		</div>
+	</div>
+</body>
+<script src="validator.js"></script>
+</html>

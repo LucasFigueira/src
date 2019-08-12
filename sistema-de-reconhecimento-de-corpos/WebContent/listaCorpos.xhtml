@@ -1,0 +1,192 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:head>
+	<h:outputScript library="javax.faces" name="jsf.js" target="head" />
+	<title>Listagem de Corpos</title>
+	<link rel="stylesheet"
+		href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+
+	<link rel="stylesheet" href="estilo.css" />
+	<link rel="stylesheet" href="estilo2.css" />
+
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</h:head>
+<body jsf:id="body">
+	<div class="navbar-wrapper">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-7 col-sm-7 logo">
+					<a style="margin-left: 100px;" href=""
+						title="PCDF - Polícia Civil do Distrito Federal"><img
+						src="logo-pcdf.png"
+						title="PCDF - Polícia Civil do Distrito Federal"
+						alt="PCDF - Polícia Civil do Distrito Federal" /></a>
+				</div>
+			</div>
+			<br />
+
+			<nav class="navbar navbar-default">
+				<div class="container-fluid">
+					<div class="top-content">
+						<div class="row"></div>
+					</div>
+					<!-- Brand and toggle get grouped for better mobile display -->
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle collapsed"
+							data-toggle="collapse"
+							data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+							<span class="sr-only">Toggle navigation</span> <span
+								class="icon-bar"></span> <span class="icon-bar"></span> <span
+								class="icon-bar"></span>
+						</button>
+						<a class="navbar-brand" href="#">PCDF</a>
+					</div>
+
+					<div class="collapse navbar-collapse"
+						id="bs-example-navbar-collapse-1">
+						<ul class="nav navbar-nav">
+							<li jsf:rendered="#{loginController.usuario.isAdministrador()}"
+								class="dropdown"><a href="#" class="dropdown-toggle"
+								data-toggle="dropdown" role="button" aria-haspopup="true"
+								aria-expanded="false">Usuários <span class="caret"></span></a>
+								<ul class="dropdown-menu">
+									<li><a jsf:outcome="cadastrar?faces-redirect=true">Cadastro
+									</a></li>
+									<li role="separator" class="divider"></li>
+									<li><a jsf:outcome="lista.xhtml?faces-redirect=true">Listar</a></li>
+
+								</ul></li>
+						</ul>
+						<ul class="nav navbar-nav">
+							<li class="dropdown"><a href="#" class="dropdown-toggle"
+								data-toggle="dropdown" role="button" aria-haspopup="true"
+								aria-expanded="false">Corpos<span class="caret"></span></a>
+								<ul class="dropdown-menu">
+									<li jsf:rendered="#{loginController.usuario.isPerito()}"><a
+										jsf:outcome="cadastrarCorpos.xhtml?faces-redirect=true">Cadastro
+									</a></li>
+									<li role="separator" class="divider"
+									jsf:rendered="#{loginController.usuario.isPerito()}"></li>
+									<li><a href="pesquisaCorpos.xhtml">Busca</a></li>
+									<li
+										jsf:rendered="#{loginController.usuario.isPerito()}"
+										role="separator" class="divider"></li>
+									<li
+										jsf:rendered="#{loginController.usuario.isPerito()}"><a
+										href="listaCorposHistoricos.xhtml">Busca Historica</a></li>
+									<li jsf:rendered="#{loginController.usuario.isPerito()}"
+										role="separator" class="divider"></li>
+									<li
+										jsf:rendered="#{loginController.usuario.isPerito()}"><a
+										href="listaCorposIdentificados.xhtml">Busca Identificados</a></li>
+								</ul></li>
+						</ul>
+						<ul class="nav navbar-nav">
+							<li class="dropdown"
+								jsf:rendered="#{loginController.usuario.isPerito()}"><a
+								href="#" class="dropdown-toggle" data-toggle="dropdown"
+								role="button" aria-haspopup="true" aria-expanded="false">Ossada<span
+									class="caret"></span></a>
+								<ul class="dropdown-menu">
+									<li jsf:rendered="#{loginController.usuario.isPerito()}"><a
+										jsf:outcome="cadastrarOssada.xhtml?faces-redirect=true">Cadastro
+									</a></li>
+									<li role="separator" class="divider"></li>
+									<li jsf:rendered="#{loginController.usuario.isPerito()}"><a
+										href="listaOssada.xhtml">Busca</a></li>
+								</ul></li>
+						</ul>
+						<ul class="nav navbar-nav pull-right">
+
+							<button class="btn btn-outline-success my-2 my-sm-0"
+								type="button">
+								<li><form jsf:id="perfil">
+										<h:commandLink value="Perfil" styleClass="" id="viewTests"
+											action="#{loginController.carregaPerfil}" immediate="true">
+										</h:commandLink>
+									</form></li> <a href="j_spring_security_logout"> Logout</a> <span
+									class="glyphicon glyphicon-log-out"> </span>
+							</button>
+							<!-- /.container-fluid -->
+						</ul>
+					</div>
+					<!-- /.navbar-collapse -->
+
+				</div>
+
+				<!-- /.container-fluid -->
+			</nav>
+		</div>
+	</div>
+	<div class="col-md-12">
+		<div class="">
+			<ul class="breadcrumb">
+				<li class="active">Você está aqui:</li>
+				<li class="active"><span>Corpos > <a
+						jsf:outcome="pesquisaCorpos.xhtml?faces-redirect=true">Busca</a> >
+						Listagem de Corpos
+				</span></li>
+			</ul>
+		</div>
+		<div jsf:rendered="#{usuarioController.hasMessageError()}">
+			<div jsf:rendered="#{not empty facesContext.messageList}"
+				class="alert alert-danger">
+				<h:messages>
+				</h:messages>
+			</div>
+		</div>
+		<div jsf:rendered="#{usuarioController.hasMessageSuccess()}">
+			<div jsf:rendered="#{not empty facesContext.messageList}"
+				class="alert alert-success">
+				<h:messages>
+				</h:messages>
+			</div>
+		</div>
+	</div>
+	<div class="container">
+		<div class="row">
+			<form jsf:prependId="false" jsf:id="form">
+				<h2 class="headerSign">Listagem de Corpos</h2>
+				<h:outputText
+					style="font-weight: bold; display: block; visibility: hidden;"
+					escape="false" value="Quebra Linha" />
+				<div class="row col-md col-md-offset registeration">
+					<ui:repeat value="#{sessionCorpoController.getCorposPesquisados()}"
+						var="corpo" varStatus="step">
+						<div class="col-md-6" style="padding-bottom: 75px;">
+							<div class="media">
+								<div class="media-left">
+									<img style="width: 192px; max-width: 192px; height: 192px;"
+										class="media-object"
+										src="#{sessionCorpoController.diretorio.get(step.index)}"
+										alt="..."> </img>
+
+								</div>
+								<div class="media-body">
+									<h4 class="media-heading">Corpo #{corpo.codigoCorpo}</h4>
+									Corpo com #{corpo.chance} de chance de ser o individuo
+									pesquisado
+									<h:outputText
+										style="font-weight: bold; display: block; visibility: hidden;"
+										escape="false" value="Quebra Linha" />
+									<button type="submit"
+										jsf:action="#{sessionCorpoController.buscarById(corpo.codigoCorpo)}"
+										class="btn btn-primary">Detalhar</button>
+								</div>
+							</div>
+						</div>
+						<br />
+					</ui:repeat>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+</html>

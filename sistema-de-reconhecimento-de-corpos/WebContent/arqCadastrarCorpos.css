@@ -1,0 +1,33 @@
+@charset "ISO-8859-1";
+
+ .uploadimghidden{
+ 	display: none;
+ 	visibility: hidden;
+ }
+	#dvConteudo{
+ 		display: none;
+ 	}
+  .disp{
+ 	display: none;
+ }
+ 
+ 
+  .uploadimgvisible{
+ 	visibility: visible;
+ 	display: block;
+ }
+
+ 
+ #btnExibeOculta{
+ 	padding-top: 1px;
+ }
+ 
+ *{margin: 0 auto; padding:0;}
+             
+#dvCentro{
+              
+   border:1px solid #000;
+}
+             
+          
+          

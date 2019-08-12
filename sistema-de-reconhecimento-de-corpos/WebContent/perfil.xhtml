@@ -1,0 +1,255 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:head>
+	<h:outputScript library="javax.faces" name="jsf.js" target="head" />
+	<title>Perfil</title>
+	<link rel="stylesheet"
+		href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="estilo.css" />
+	<link rel="stylesheet" href="estilo2.css" />
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</h:head>
+
+
+<body jsf:id="body">
+	<div class="navbar-wrapper">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-7 col-sm-7 logo">
+					<a style="margin-left: 100px;" href=""
+						title="PCDF - Polícia Civil do Distrito Federal"><img
+						src="logo-pcdf.png"
+						title="PCDF - Polícia Civil do Distrito Federal"
+						alt="PCDF - Polícia Civil do Distrito Federal" /></a>
+				</div>
+			</div>
+			<br />
+			<nav class="navbar navbar-default">
+				<div class="container-fluid">
+					<div class="top-content">
+						<div class="row"></div>
+					</div>
+					<!-- Brand and toggle get grouped for better mobile display -->
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle collapsed"
+							data-toggle="collapse"
+							data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+							<span class="sr-only">Toggle navigation</span> <span
+								class="icon-bar"></span> <span class="icon-bar"></span> <span
+								class="icon-bar"></span>
+						</button>
+						<a class="navbar-brand" href="#">PCDF</a>
+					</div>
+
+<div class="collapse navbar-collapse"
+						id="bs-example-navbar-collapse-1">
+						<ul class="nav navbar-nav">
+							<li jsf:rendered="#{loginController.usuario.isAdministrador()}"
+								class="dropdown"><a href="#" class="dropdown-toggle"
+								data-toggle="dropdown" role="button" aria-haspopup="true"
+								aria-expanded="false">Usuários <span class="caret"></span></a>
+								<ul class="dropdown-menu">
+									<li jsf:rendered="#{loginController.usuario.isAdministrador()}"><a jsf:outcome="cadastrar?faces-redirect=true">Cadastro
+									</a></li>
+									<li role="separator" class="divider"></li>
+									<li jsf:rendered="#{loginController.usuario.isAdministrador()}"><a jsf:outcome="lista.xhtml?faces-redirect=true">Listar</a></li>
+
+								</ul></li>
+						</ul>
+						<ul class="nav navbar-nav">
+							<li class="dropdown" jsf:rendered="#{loginController.usuario.isPerito() or loginController.usuario.isUser() }"><a href="#" class="dropdown-toggle"
+								data-toggle="dropdown" role="button" aria-haspopup="true"
+								aria-expanded="false" >Corpos<span class="caret"></span></a>
+								<ul class="dropdown-menu">
+									<li jsf:rendered="#{loginController.usuario.isPerito()}"><a
+										jsf:outcome="cadastrarCorpos.xhtml?faces-redirect=true">Cadastro
+									</a></li>
+									<li role="separator" class="divider"
+									jsf:rendered="#{loginController.usuario.isPerito()}"></li>
+									<li><a href="pesquisaCorpos.xhtml">Busca</a></li>
+									<li
+										jsf:rendered="#{loginController.usuario.isPerito()}"
+										role="separator" class="divider"></li>
+									<li
+										jsf:rendered="#{loginController.usuario.isPerito()}"><a
+										href="listaCorposHistoricos.xhtml">Busca Historica</a></li>
+									<li jsf:rendered="#{loginController.usuario.isPerito()}"
+										role="separator" class="divider"></li>
+									<li
+										jsf:rendered="#{loginController.usuario.isPerito()}"><a
+										href="listaCorposIdentificados.xhtml">Busca Identificados</a></li>
+								</ul></li>
+						</ul>
+						<ul class="nav navbar-nav">
+							<li class="dropdown" jsf:rendered="#{loginController.usuario.isPerito()}"><a href="#" class="dropdown-toggle"
+								data-toggle="dropdown" role="button" aria-haspopup="true"
+								aria-expanded="false">Ossada<span class="caret"></span></a>
+								<ul class="dropdown-menu">
+									<li jsf:rendered="#{loginController.usuario.isPerito()}"><a
+										jsf:outcome="cadastrarOssada.xhtml?faces-redirect=true">Cadastro
+									</a></li>
+									<li role="separator" class="divider"></li>
+									<li jsf:rendered="#{loginController.usuario.isPerito()}"><a href="listaOssada.xhtml">Busca</a></li>
+								</ul></li>
+						</ul>
+						<ul class="nav navbar-nav pull-right">
+
+							<button class="btn btn-outline-success my-2 my-sm-0"
+								type="button">
+								<li><form jsf:id="perfil">
+										<h:commandLink value="Perfil" styleClass="" id="viewTests"
+											action="#{loginController.carregaPerfil}" immediate="true">
+										</h:commandLink>
+									</form></li> <a href="j_spring_security_logout"> Logout</a> <span
+									class="glyphicon glyphicon-log-out"> </span>
+							</button>
+							<!-- /.container-fluid -->
+						</ul>
+					</div>
+					<!-- /.navbar-collapse -->
+
+				</div>
+
+				<!-- /.container-fluid -->
+			</nav>
+		</div>
+	</div>
+	<ul class="breadcrumb">
+		<li class="active">Você está aqui:</li>
+		<li class="active"><span>Perfil
+		</span></li>
+	</ul>
+	<div jsf:rendered="#{loginController.hasMessageError()}">
+		<div jsf:rendered="#{not empty facesContext.messageList}"
+			class="alert alert-danger">
+			<h:messages>
+			</h:messages>
+		</div>
+	</div>
+	<div jsf:rendered="#{loginController.hasMessageSuccess()}">
+		<div jsf:rendered="#{not empty facesContext.messageList}"
+			class="alert alert-success">
+			<h:messages>
+			</h:messages>
+		</div>
+	</div>
+	<form jsf:id="formLogin" jsf:prependId="false">
+		<h3 class="headerSign">Perfil</h3>
+		<div class="row col-md-8 col-md-offset-2 registeration">
+			<div class="registerInner">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="col-md-12">
+							<div class="form-group">
+								<label for="nome">Nome Completo:</label> <input
+									class="form-control"
+									jsf:value="#{loginController.usuarioAlteracao.nome}"
+									type="text" name="nome" id="nome" placeholder="Nome"
+									required="true" />
+							</div>
+						</div>
+					</div>
+					<div class="col-md-12">
+						<div class="col-md-12">
+							<div class="form-group">
+								<label for="cpf">Login do Usuário:</label> <input
+									class="form-control"
+									jsf:value="#{loginController.usuarioAlteracao.login}"
+									type="text" name="cpf" id="cpf" placeholder="CPF"
+									disabled="true" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-12">
+					<div class="form-group">
+						<label for="email">E-mail:</label> <input class="form-control"
+							jsf:value="#{loginController.usuarioAlteracao.email}"
+							type="email" name="email" id="email" placeholder="E-mail"
+							required="true" />
+					</div>
+				</div>
+				<div class="col-md-12">
+					<div class="form-group">
+						<label for="cargo">Cargo:</label>
+						<h:selectOneMenu class="form-control" id="selectCargo"
+							value="#{loginController.usuarioAlteracao.cargo}" disabled="true">
+							<f:selectItem itemLabel="Escolha" itemValue="#{null}"></f:selectItem>
+							<f:selectItem itemLabel="Administrador" itemValue="Administrador"></f:selectItem>
+							<f:selectItem itemLabel="Estagiário" itemValue="Estagiário"></f:selectItem>
+							<f:selectItem itemLabel="Policial" itemValue="Policial"></f:selectItem>
+							<f:selectItem itemLabel="Delegado" itemValue="Delegado"></f:selectItem>
+							<f:selectItem itemLabel="Perito" itemValue="Perito"></f:selectItem>
+						</h:selectOneMenu>
+					</div>
+				</div>
+				<div class="col-md-12">
+					<div class="form-group">
+						<label for="selectOlhos">Senha Antiga:</label> <input
+							jsf:id="senha" jsf:value="#{loginController.senhaAntiga}"
+							placeholder="Senha" type="password" class="form-control"
+							id="exampleInputPassword1" />
+					</div>
+				</div>
+				<div class="col-md-12">
+					<div class="form-group">
+						<label for="selectOlhos">Nova Senha:</label> <input
+							jsf:id="senha2" jsf:value="#{loginController.novaSenha}"
+							placeholder="Senha" type="password" class="form-control"
+							id="exampleInputPassword2" />
+					</div>
+				</div>
+				<div class="col-md-12">
+					<div class="form-group">
+						<label for="selectOlhos">Confirma Senha:</label> <input
+							jsf:id="senha3" jsf:value="#{loginController.confirmaSenha}"
+							placeholder="Senha" type="password" class="form-control"
+							id="exampleInputPassword3" />
+					</div>
+				</div>
+				<div class="col-md-12 lucas">
+					<label for="selectOlhos">Órgão:</label>
+					<h:selectOneMenu class="form-control" id="selectOrgao"
+						value="#{loginController.usuarioAlteracao.orgao}" disabled="true">
+						<f:selectItem itemLabel="Escolha" itemValue="#{null}"></f:selectItem>
+						<f:selectItem itemLabel="PMDF" itemValue="PMDF"></f:selectItem>
+						<f:selectItem itemLabel="IML" itemValue="IML"></f:selectItem>
+						<f:selectItem itemLabel="PF" itemValue="PF"></f:selectItem>
+					</h:selectOneMenu>
+
+				</div>
+				<h:outputText style="font-weight: bold; display: block; visibility: hidden;" escape="false" value="Quebra Linha"/>
+				<div class="col-md-12">
+					<div class="form-group">
+						<button class="btn btn-primary" data-toggle="modal" type="button"
+							data-target="#confirm-perfil" style="width: 100%;">Alterar</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="confirm-perfil" role="dialog"
+			aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">Alterar Perfil</div>
+					<div class="modal-body">Deseja realmente alterar seu perfil?</div>
+					<div class="modal-footer">
+						<button type="button" data-dismiss="modal" class="btn btn-danger"
+							id="delete">Cancelar</button>
+						<button type="submit"
+							jsf:action="#{loginController.atualizarPerfil()}"
+							class="btn btn-primary">Alterar</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+</body>
+</html>

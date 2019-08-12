@@ -1,0 +1,196 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<head>
+
+<title>Pesquisa Ossada</title>
+
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+<link rel="stylesheet" href="estilo.css" />
+<link rel="stylesheet" href="estilo2.css" />
+<link rel="stylesheet"
+	href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
+<link rel="stylesheet" href="/resources/demos/style.css" />
+
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+</head>
+
+
+<body jsf:id="body">
+	<div class="navbar-wrapper">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-7 col-sm-7 logo">
+					<a style="margin-left: 100px;" href=""
+						title="PCDF - Polícia Civil do Distrito Federal"><img
+						src="logo-pcdf.png"
+						title="PCDF - Polícia Civil do Distrito Federal"
+						alt="PCDF - Polícia Civil do Distrito Federal" /></a>
+				</div>
+
+			</div>
+			<br />
+			<nav class="navbar navbar-default">
+				<div class="container-fluid">
+					<div class="top-content">
+						<div class="row"></div>
+					</div>
+					<!-- Brand and toggle get grouped for better mobile display -->
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle collapsed"
+							data-toggle="collapse"
+							data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+							<span class="sr-only">Toggle navigation</span> <span
+								class="icon-bar"></span> <span class="icon-bar"></span> <span
+								class="icon-bar"></span>
+						</button>
+						<a class="navbar-brand" href="#">PCDF</a>
+					</div>
+
+					<!-- Collect the nav links, forms, and other content for toggling -->
+					<div class="collapse navbar-collapse"
+						id="bs-example-navbar-collapse-1">
+						<ul class="nav navbar-nav">
+							<li jsf:rendered="#{loginController.usuario.isAdministrador()}"
+								class="dropdown"><a href="#" class="dropdown-toggle"
+								data-toggle="dropdown" role="button" aria-haspopup="true"
+								aria-expanded="false">Usuários <span class="caret"></span></a>
+								<ul class="dropdown-menu">
+									<li><a jsf:outcome="cadastrar?faces-redirect=true">Cadastro
+									</a></li>
+									<li role="separator" class="divider"></li>
+									<li><a jsf:outcome="lista.xhtml?faces-redirect=true">Listar</a></li>
+
+								</ul></li>
+						</ul>
+						<ul class="nav navbar-nav">
+							<li class="dropdown"><a href="#" class="dropdown-toggle"
+								data-toggle="dropdown" role="button" aria-haspopup="true"
+								aria-expanded="false">Corpos<span class="caret"></span></a>
+								<ul class="dropdown-menu">
+									<li jsf:rendered="#{loginController.usuario.isPerito()}"><a
+										jsf:outcome="cadastrarCorpos.xhtml?faces-redirect=true">Cadastro
+									</a></li>
+									<li role="separator" class="divider"></li>
+									<li jsf:rendered="#{loginController.usuario.isPerito()}"><a href="pesquisaCorpos.xhtml">Busca</a></li>
+								</ul></li>
+						</ul>
+						<ul class="nav navbar-nav">
+							<li class="dropdown" jsf:rendered="#{loginController.usuario.isPerito()}"><a href="#" class="dropdown-toggle"
+								data-toggle="dropdown" role="button" aria-haspopup="true"
+								aria-expanded="false">Ossada<span class="caret"></span></a>
+								<ul class="dropdown-menu">
+									<li jsf:rendered="#{loginController.usuario.isPerito()}"><a
+										jsf:outcome="cadastrarOssada.xhtml?faces-redirect=true">Cadastro
+									</a></li>
+									<li role="separator" class="divider"></li>
+									<li jsf:rendered="#{loginController.usuario.isPerito()}"><a href="listaOssada.xhtml">Busca</a></li>
+								</ul></li>
+						</ul>
+						<ul class="nav navbar-nav pull-right">
+
+							<button class="btn btn-outline-success my-2 my-sm-0"
+								type="button">
+								<li><form jsf:id="perfil">
+										<h:commandLink value="Perfil" styleClass="" id="viewTests"
+											action="#{loginController.carregaPerfil}" immediate="true">
+										</h:commandLink>
+									</form></li> <a href="j_spring_security_logout"> Logout</a> <span
+									class="glyphicon glyphicon-log-out"> </span>
+							</button>
+							<!-- /.container-fluid -->
+						</ul>
+					</div>
+					<!-- /.navbar-collapse -->
+				</div>
+				<!-- /.container-fluid -->
+			</nav>
+			<div class="col-md-12">
+				<div class="">
+					<ul class="breadcrumb">
+						<li class="active">Você está aqui:</li>
+						<li class="active"><span>Ossada > Busca</span></li>
+					</ul>
+				</div>
+				<div jsf:rendered="#{usuarioController.hasMessageError()}">
+					<div jsf:rendered="#{not empty facesContext.messageList}"
+						class="alert alert-danger">
+						<h:messages>
+						</h:messages>
+					</div>
+				</div>
+				<div jsf:rendered="#{usuarioController.hasMessageSuccess()}">
+					<div jsf:rendered="#{not empty facesContext.messageList}"
+						class="alert alert-success">
+						<h:messages>
+						</h:messages>
+					</div>
+				</div>
+			</div>
+			<form jsf:id="formCadastro" jsf:prependId="false"
+				enctype="multipart/form-data">
+				<h3 class="headerSign">Consultar Ossada</h3>
+				<div class="row col-md-8 col-md-offset-2 registeration">
+					<div class="registerInner">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="form-group">
+									<label for="sel1">*Favor preencher com as informações
+										mais corretas possíveis para uma melhor listagem dos corpos
+										relacionados.</label>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-4">
+									<div class="form-group">
+										<label for="sel1">Altura:</label> <input name="altura"
+											placeholder="Altura Ex: 1.80" id="altura" type="text"
+											class="form-control"
+											jsf:value="#{requestOssadaController.ossada.altura}" />
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="form-group">
+										<label for="selectPele">Tipo racial:</label>
+										<h:selectOneMenu class="form-control" id="selectPele"
+											value="#{requestOssadaController.ossada.tipoRacial}">
+											<f:selectItem itemLabel="Escolha" itemValue=""></f:selectItem>
+											<f:selectItem itemLabel="Caucásico" itemValue="Caucásico"></f:selectItem>
+											<f:selectItem itemLabel="Mongólico" itemValue="Mongólico"></f:selectItem>
+											<f:selectItem itemLabel="Negróide" itemValue="Negróide"></f:selectItem>
+											<f:selectItem itemLabel="Indiano" itemValue="Indiano"></f:selectItem>
+											<f:selectItem itemLabel="Australóide" itemValue="Australóide"></f:selectItem>
+										</h:selectOneMenu>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="form-group">
+										<label for="sel1">Faixa Etária:</label> <input name="idade"
+											placeholder="Idade Ex: 18" id="idade" type="text"
+											class="form-control"
+											jsf:value="#{requestOssadaController.ossada.idade}" />
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<button type="submit"
+						jsf:action="#{requestOssadaController.pesquisar()}"
+						class=" signbuttons btn btn-primary" style="width: 100%;">Pesquisar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+<script src="validator.js"></script>
+</html>

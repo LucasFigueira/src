@@ -1,0 +1,224 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:head>
+	<h:outputScript library="javax.faces" name="jsf.js" target="head" />
+	<title>Lista Ossada</title>
+	<link rel="stylesheet"
+		href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="estilo.css" />
+	<link rel="stylesheet" href="estilo2.css" />
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</h:head>
+<body jsf:id="body">
+	<div class="navbar-wrapper">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-7 col-sm-7 logo">
+					<a style="margin-left: 100px;" href=""
+						title="PCDF - Polícia Civil do Distrito Federal"><img
+						src="logo-pcdf.png"
+						title="PCDF - Polícia Civil do Distrito Federal"
+						alt="PCDF - Polícia Civil do Distrito Federal" /></a>
+				</div>
+
+			</div>
+			<br />
+			<nav class="navbar navbar-default">
+				<div class="container-fluid">
+					<div class="top-content">
+						<div class="row"></div>
+					</div>
+					<!-- Brand and toggle get grouped for better mobile display -->
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle collapsed"
+							data-toggle="collapse"
+							data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+							<span class="sr-only">Toggle navigation</span> <span
+								class="icon-bar"></span> <span class="icon-bar"></span> <span
+								class="icon-bar"></span>
+						</button>
+						<a class="navbar-brand" href="#">PCDF</a>
+					</div>
+
+					<div class="collapse navbar-collapse"
+						id="bs-example-navbar-collapse-1">
+						<ul class="nav navbar-nav">
+							<li jsf:rendered="#{loginController.usuario.isAdministrador()}"
+								class="dropdown"><a href="#" class="dropdown-toggle"
+								data-toggle="dropdown" role="button" aria-haspopup="true"
+								aria-expanded="false">Usuários <span class="caret"></span></a>
+								<ul class="dropdown-menu">
+									<li><a jsf:outcome="cadastrar?faces-redirect=true">Cadastro
+									</a></li>
+									<li role="separator" class="divider"></li>
+									<li><a jsf:outcome="lista.xhtml?faces-redirect=true">Listar</a></li>
+
+								</ul></li>
+						</ul>
+						<ul class="nav navbar-nav">
+							<li class="dropdown"><a href="#" class="dropdown-toggle"
+								data-toggle="dropdown" role="button" aria-haspopup="true"
+								aria-expanded="false">Corpos<span class="caret"></span></a>
+								<ul class="dropdown-menu">
+									<li jsf:rendered="#{loginController.usuario.isPerito()}"><a
+										jsf:outcome="cadastrarCorpos.xhtml?faces-redirect=true">Cadastro
+									</a></li>
+									<li role="separator" class="divider"></li>
+									<li><a href="pesquisaCorpos.xhtml">Busca</a></li>
+									<li
+										jsf:rendered="#{loginController.usuario.isPerito() or 
+											loginController.usuario.isUser()}"
+										role="separator" class="divider"></li>
+									<li
+										jsf:rendered="#{loginController.usuario.isPerito() or 
+											loginController.usuario.isUser()}"><a
+										href="listaCorposHistoricos.xhtml">Busca Historica</a></li>
+									<li jsf:rendered="#{loginController.usuario.isPerito()}"
+										role="separator" class="divider"></li>
+									<li
+										jsf:rendered="#{loginController.usuario.isPerito() or 
+											loginController.usuario.isUser()}"><a
+										href="listaCorposIdentificados.xhtml">Busca Identificados</a></li>
+								</ul></li>
+						</ul>
+						<ul class="nav navbar-nav">
+							<li class="dropdown"
+								jsf:rendered="#{loginController.usuario.isPerito()}"><a
+								href="#" class="dropdown-toggle" data-toggle="dropdown"
+								role="button" aria-haspopup="true" aria-expanded="false">Ossada<span
+									class="caret"></span></a>
+								<ul class="dropdown-menu">
+									<li jsf:rendered="#{loginController.usuario.isPerito()}"><a
+										jsf:outcome="cadastrarOssada.xhtml?faces-redirect=true">Cadastro
+									</a></li>
+									<li role="separator" class="divider"></li>
+									<li jsf:rendered="#{loginController.usuario.isPerito()}"><a
+										href="listaOssada.xhtml">Busca</a></li>
+								</ul></li>
+						</ul>
+						<ul class="nav navbar-nav pull-right">
+
+							<button class="btn btn-outline-success my-2 my-sm-0"
+								type="button">
+								<li><form jsf:id="perfil">
+										<h:commandLink value="Perfil" styleClass="" id="viewTests"
+											action="#{loginController.carregaPerfil}" immediate="true">
+										</h:commandLink>
+									</form></li> <a href="j_spring_security_logout"> Logout</a> <span
+									class="glyphicon glyphicon-log-out"> </span>
+							</button>
+							<!-- /.container-fluid -->
+						</ul>
+					</div>
+					<!-- /.navbar-collapse -->
+
+				</div>
+
+				<!-- /.container-fluid -->
+			</nav>
+			<div class="col-md-12">
+				<div class="">
+					<ul class="breadcrumb">
+						<li class="active">Você está aqui:</li>
+						<li class="active"><span>Ossada > Lista</span></li>
+					</ul>
+				</div>
+				<div jsf:rendered="#{usuarioController.hasMessageError()}">
+					<div jsf:rendered="#{not empty facesContext.messageList}"
+						class="alert alert-danger">
+						<h:messages>
+						</h:messages>
+					</div>
+				</div>
+				<div jsf:rendered="#{usuarioController.hasMessageSuccess()}">
+					<div jsf:rendered="#{not empty facesContext.messageList}"
+						class="alert alert-success">
+						<h:messages>
+						</h:messages>
+					</div>
+				</div>
+			</div>
+			<form jsf:id="formOssada" jsf:prependId="false">
+				<h2 class="headerSign">Listar Ossadas</h2>
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="sel1">Tipo Consulta:</label> <select
+								jsf:value="#{sessionOssadaController.parametroSearch}"
+								class="form-control" id="sel1" size="1">
+								<f:selectItem itemValue="codigoOssada" itemLabel="ID" />
+							</select>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="sel1">Parâmetro Consulta::</label> <input type="text"
+								class="form-control" placeholder="Preencha Busca"
+								jsf:value="#{sessionOssadaController.parametroVal}">
+							<f:ajax event="keyup" render="renderTable"
+								listener="#{sessionOssadaController.atualizaLista}"
+								execute="formOssada"></f:ajax>
+							<i class="glyphicon glyphicon-search"></i> </input>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-12" jsf:id="renderTable">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>Id</th>
+								<th>Sexo</th>
+								<th>Tipo Racial</th>
+								<th>Altura</th>
+								<th>Ações</th>
+							</tr>
+						</thead>
+						<tbody>
+							<ui:repeat var="ossada"
+								value="#{sessionOssadaController.ossadas}" varStatus="status">
+								<tr>
+									<td>#{ossada.codigoOssada}</td>
+									<td>#{ossada.sexo}</td>
+									<td>#{ossada.tipoRacial}</td>
+									<td>#{ossada.altura}</td>
+									<td><h:commandLink value="Detalhes"
+											styleClass="btn btn-primary" id="viewTests"
+											action="#{sessionOssadaController.carregaDetalhes}"
+											immediate="true">
+											<f:param name="ossada" value="#{ossada.codigoOssada}" />
+
+										</h:commandLink></td>
+								</tr>
+							</ui:repeat>
+						</tbody>
+					</table>
+					<ul class="pagination">
+						<ui:repeat value="#{sessionOssadaController.paginacaoAux}"
+							var="paginacao" varStatus="status">
+							<li jsf:id="pagination1"><h:commandLink
+									value="#{status.index+1}"
+									action="#{sessionOssadaController.atualizaPaginacao}">
+									<f:param name="paginacao" value="#{status.index+1}" />
+								</h:commandLink></li>
+						</ui:repeat>
+					</ul>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+<script>
+	function renderComplete(data) {
+		if (data.status == 'success') {
+			$('#modalUsuario').modal('show');
+		}
+	}
+</script>
+</html>

@@ -1,0 +1,48 @@
+!SESSION 2018-03-09 10:49:49.669 -----------------------------------------------
+eclipse.buildId=4.4.2.M20150204-1700
+java.version=1.8.0_131
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=pt_BR
+Framework arguments:  -product org.eclipse.epp.package.jee.product
+Command-line arguments:  -os win32 -ws win32 -arch x86 -product org.eclipse.epp.package.jee.product
+
+!ENTRY org.eclipse.ui 2 0 2018-03-09 10:49:55.625
+!MESSAGE Warnings while parsing the commands from the 'org.eclipse.ui.commands' and 'org.eclipse.ui.actionDefinitions' extension points.
+!SUBENTRY 1 org.eclipse.ui 2 0 2018-03-09 10:49:55.625
+!MESSAGE Commands should really have a category: plug-in='org.eclipse.cobol.ui', id='org.eclipse.cobol.ui.edit.text.toggle.comment', categoryId='org.eclipse.cobol.ui.category.source'
+
+!ENTRY org.eclipse.ui 2 0 2018-03-09 10:49:56.099
+!MESSAGE Warnings while parsing the commands from the 'org.eclipse.ui.commands' and 'org.eclipse.ui.actionDefinitions' extension points.
+!SUBENTRY 1 org.eclipse.ui 2 0 2018-03-09 10:49:56.099
+!MESSAGE Commands should really have a category: plug-in='org.eclipse.cobol.ui', id='org.eclipse.cobol.ui.edit.text.toggle.comment', categoryId='org.eclipse.cobol.ui.category.source'
+
+!ENTRY org.eclipse.core.net 1 0 2018-03-09 10:49:57.219
+!MESSAGE System property http.proxyHost is not set but should be 192.168.10.19.
+
+!ENTRY org.eclipse.core.net 1 0 2018-03-09 10:49:57.223
+!MESSAGE System property http.proxyPort is not set but should be 3128.
+
+!ENTRY org.eclipse.egit.ui 2 0 2018-03-09 10:50:05.438
+!MESSAGE Warning: The environment variable HOME is not set. The following directory will be used to store the Git
+user global configuration and to define the default location to store repositories: 'Z:\'. If this is
+not correct please set the HOME environment variable and restart Eclipse. Otherwise Git for Windows and
+EGit might behave differently since they see different configuration options.
+This warning can be switched off on the Team > Git > Confirmations and Warnings preference page.
+
+!ENTRY com.metrixware.infrastructure 1 0 2018-03-09 10:50:05.894
+!MESSAGE Evaluating extension: editorWrapper
+
+!ENTRY org.eclipse.cobol.ui 1 0 2018-03-09 10:50:06.003
+!MESSAGE Platform version 4.4.2.v20150204-1700 ; activating Compatibility Handler for target 3.7+ (org.eclipse.cobol.ui.compatibility.eclipse37.CobolUICompatibilityHandler37)
+
+!ENTRY org.eclipse.cobol.ui 1 0 2018-03-09 10:50:06.006
+!MESSAGE ICobolUICompatibilityHandler's implementation 3.7+ activated
+
+!ENTRY org.eclipse.cobol.ui 1 20 2018-03-09 10:50:06.013
+!MESSAGE Evaluating extension: contentAssistProvider
+
+!ENTRY org.eclipse.cobol.ui 1 20 2018-03-09 10:50:06.069
+!MESSAGE No Quick Assist Processor Provider found. Using default.
+
+!ENTRY org.eclipse.cobol.ui 1 20 2018-03-09 10:50:06.070
+!MESSAGE Evaluating extension: externalResourceProvider

@@ -1,0 +1,265 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:head>
+	<h:outputScript library="javax.faces" name="jsf.js" target="head" />
+	<title>Alterar Usuário</title>
+	<link rel="stylesheet"
+		href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="estilo.css" />
+	<link rel="stylesheet" href="estilo2.css" />
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</h:head>
+
+
+<body jsf:id="body">
+	<div class="navbar-wrapper">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-7 col-sm-7 logo">
+					<a style="margin-left: 100px;" href=""
+						title="PCDF - Polícia Civil do Distrito Federal"><img
+						src="logo-pcdf.png"
+						title="PCDF - Polícia Civil do Distrito Federal"
+						alt="PCDF - Polícia Civil do Distrito Federal" /></a>
+				</div>
+			</div>
+			<br />
+			<nav class="navbar navbar-default">
+				<div class="container-fluid">
+					<div class="top-content">
+						<div class="row"></div>
+					</div>
+					<!-- Brand and toggle get grouped for better mobile display -->
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle collapsed"
+							data-toggle="collapse"
+							data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+							<span class="sr-only">Toggle navigation</span> <span
+								class="icon-bar"></span> <span class="icon-bar"></span> <span
+								class="icon-bar"></span>
+						</button>
+						<a class="navbar-brand" href="pesquisaCorpos.xhtml">PCDF</a>
+					</div>
+
+
+					<div class="collapse navbar-collapse"
+						id="bs-example-navbar-collapse-1">
+						<ul class="nav navbar-nav">
+							<li jsf:rendered="#{loginController.usuario.isAdministrador()}"
+								class="dropdown"><a href="#" class="dropdown-toggle"
+								data-toggle="dropdown" role="button" aria-haspopup="true"
+								aria-expanded="false">Usuários <span class="caret"></span></a>
+								<ul class="dropdown-menu">
+									<li><a jsf:outcome="cadastrar?faces-redirect=true">Cadastro
+									</a></li>
+									<li role="separator" class="divider"></li>
+									<li><a jsf:outcome="lista.xhtml?faces-redirect=true">Listar</a></li>
+
+								</ul></li>
+						</ul>
+						<ul class="nav navbar-nav pull-right">
+
+							<button class="btn btn-outline-success my-2 my-sm-0"
+								type="button">
+								<li><form jsf:id="perfil">
+										<h:commandLink value="Perfil" styleClass="" id="viewTests"
+											action="#{loginController.carregaPerfil}" immediate="true">
+										</h:commandLink>
+									</form></li> <a href="j_spring_security_logout"> Logout</a> <span
+									class="glyphicon glyphicon-log-out"> </span>
+							</button>
+							<!-- /.container-fluid -->
+						</ul>
+					</div>
+					<!-- /.navbar-collapse -->
+
+				</div>
+
+				<!-- /.container-fluid -->
+			</nav>
+		</div>
+	</div>
+	<div class="col-md-12">
+		<div class="">
+			<ul class="breadcrumb">
+				<li class="active">Você está aqui:</li>
+				<li class="active"><span>Usuários > <a
+						jsf:outcome="lista.xhtml?faces-redirect=true">Listar</a> > Alterar
+						Usuário
+				</span></li>
+			</ul>
+		</div>
+		<div jsf:rendered="#{usuarioController.hasMessageError()}">
+			<div jsf:rendered="#{not empty facesContext.messageList}"
+				class="alert alert-danger">
+				<h:messages>
+				</h:messages>
+			</div>
+		</div>
+		<div jsf:rendered="#{usuarioController.hasMessageSuccess()}">
+			<div jsf:rendered="#{not empty facesContext.messageList}"
+				class="alert alert-success">
+				<h:messages>
+				</h:messages>
+			</div>
+		</div>
+	</div>
+	<form jsf:id="formLogin" jsf:prependId="false">
+		<div class="row col-md-8 col-md-offset-2 registeration">
+			<div class="registerInner">
+				<div class="row">
+					<h3 class="headerSign">Alterar Usuário</h3>
+					<div class="col-md-12">
+						<div class="col-md-12">
+							<div class="form-group">
+								<label for="nome">Nome Completo:</label> <input
+									class="form-control"
+									jsf:value="#{loginController.usuarioAlteracao.nome}"
+									type="text" name="nome" id="nome" placeholder="Nome"
+									required="true" />
+							</div>
+						</div>
+					</div>
+					<div class="col-md-12">
+						<div class="col-md-12">
+							<div class="form-group">
+								<label for="cpf">Login do Usuário:</label> <input
+									class="form-control"
+									jsf:value="#{loginController.usuarioAlteracao.login}"
+									type="text" name="cpf" id="cpf" placeholder="CPF"
+									disabled="true" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-12">
+					<div class="form-group">
+						<label for="email">E-mail:</label> <input class="form-control"
+							jsf:value="#{loginController.usuarioAlteracao.email}"
+							type="email" name="email" id="email" placeholder="E-mail" />
+					</div>
+				</div>
+				<div class="col-md-12">
+					<div class="form-group">
+						<label for="cargo">Cargo:</label>
+						<h:selectOneMenu class="form-control" id="selectCargo"
+							value="#{loginController.usuarioAlteracao.cargo}" required="true"
+							requiredMessage="Preencha todos os campos.">
+							<f:selectItem itemLabel="Escolha" itemValue="#{null}"></f:selectItem>
+							<f:selectItem itemLabel="Administrador" itemValue="Administrador"></f:selectItem>
+							<f:selectItem itemLabel="Estagiário" itemValue="Estagiário"></f:selectItem>
+							<f:selectItem itemLabel="Policial" itemValue="Policial"></f:selectItem>
+							<f:selectItem itemLabel="Delegado" itemValue="Delegado"></f:selectItem>
+							<f:selectItem itemLabel="Perito" itemValue="Perito"></f:selectItem>
+						</h:selectOneMenu>
+					</div>
+				</div>
+
+				<div class="col-md-12">
+					<div class="form-group">
+						<label for="selectOlhos">Senha:</label> <input jsf:id="senha"
+							placeholder="Senha" type="password" class="form-control"
+							id="exampleInputPassword1" disabled="true" />
+						<button type="button" class="btn btn-default" jsf:id="vaiAlterar" >
+							<f:ajax listener="#{loginController.senhaSeraAlterada}"></f:ajax>
+							Alterar senha
+						</button>
+					</div>
+				</div>
+					<h:inputHidden id="senhaAux" value="#{loginController.novaSenha}" />
+					
+				<div class="col-md-12">
+					<div class="form-group">
+						<label>Confirme a Senha:</label> <input jsf:id="senha1"
+							placeholder="Senha" disabled="true" type="password"
+							class="form-control" id="exampleInputPassword2" >
+							</input>
+						
+					</div>
+					
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<label>Órgão:</label>
+						<h:selectOneMenu class="form-control" id="selectOrgao"
+							value="#{loginController.usuarioAlteracao.orgao}" required="true"
+							requiredMessage="Preencha todos os campos.">
+							<f:selectItem itemLabel="Escolha" itemValue="#{null}"></f:selectItem>
+							<f:selectItem itemLabel="PMDF" itemValue="PMDF"></f:selectItem>
+							<f:selectItem itemLabel="IML" itemValue="IML"></f:selectItem>
+							<f:selectItem itemLabel="PF" itemValue="PF"></f:selectItem>
+						</h:selectOneMenu>
+					</div>
+				</div>
+				<h:inputHidden id="senhaAux2"
+							value="#{loginController.confirmaSenha}" />
+					
+				<h:outputText
+					style="font-weight: bold; display: block; visibility: hidden;"
+					escape="false" value="Quebra Linha" />
+				<div class="col-md-12">
+					<div class="form-group">
+						<label for="selectOlhos">Autoridade:</label>
+						<h:panelGroup id="search-options" layout="block"
+							styleClass="radioButtonSpace">
+							<h:selectOneRadio
+								value="#{loginController.usuarioAlteracao.autoridade}">
+
+								<f:selectItem itemValue="ROLE_USER" itemLabel="Usuário Pesquisa" />
+								<f:selectItem itemValue="ROLE_PERITO" itemLabel="Usuário Perito" />
+								<f:selectItem itemValue="ROLE_ADMIN"
+									itemLabel="Administrador SInPE" />
+							</h:selectOneRadio>
+						</h:panelGroup>
+					</div>
+				</div>
+				<h:outputText
+					style="font-weight: bold; display: block; visibility: hidden;"
+					escape="false" value="Quebra Linha" />
+				<button class="btn btn-primary" data-toggle="modal" type="button"
+					data-target="#confirm-alter" style="width: 100%;" id="alterar2">Alterar</button>
+
+				<div class="modal fade" id="confirm-alter" role="dialog"
+					aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">Alterar Usuario</div>
+							<div class="modal-body">Deseja realmente alterar este
+								usuario?</div>
+							<div class="modal-footer">
+								<button type="button" data-dismiss="modal"
+									class="btn btn-danger" id="delete">Cancelar</button>
+								<button type="submit"
+									jsf:action="#{loginController.atualizar()}"
+									class="btn btn-primary" id="alterar">Alterar</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				</div>
+		</div>
+	</form>
+</body>
+<script>
+	$("#vaiAlterar").click(function() {
+		$("#exampleInputPassword2").prop('disabled', false);
+		$("#exampleInputPassword1").prop('disabled', false);
+		$("#exampleInputPassword2").prop('required', true);
+		$("#exampleInputPassword1").prop('required', true);
+
+	});
+	$("#alterar2").click(function() {
+		var senha = $("#exampleInputPassword1").val();
+		var confirmarsenha = $("#exampleInputPassword2").val();
+		$("#senhaAux").val(senha);
+		$("#senhaAux2").val(confirmarsenha);
+	});
+</script>
+</html>

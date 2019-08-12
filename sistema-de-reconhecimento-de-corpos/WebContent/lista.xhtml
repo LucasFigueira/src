@@ -1,0 +1,258 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:head>
+	<h:outputScript library="javax.faces" name="jsf.js" target="head" />
+	<title>Lista de Usuários</title>
+	<link rel="stylesheet"
+		href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="estilo.css" />
+	<link rel="stylesheet" href="estilo2.css" />
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</h:head>
+<body jsf:id="body">
+	<div class="navbar-wrapper">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-7 col-sm-7 logo">
+					<a style="margin-left: 100px;" href=""
+						title="PCDF - Polícia Civil do Distrito Federal"><img
+						src="logo-pcdf.png"
+						title="PCDF - Polícia Civil do Distrito Federal"
+						alt="PCDF - Polícia Civil do Distrito Federal" /></a>
+				</div>
+
+			</div>
+			<br />
+			<nav class="navbar navbar-default">
+				<div class="container-fluid">
+					<div class="top-content">
+						<div class="row"></div>
+					</div>
+					<!-- Brand and toggle get grouped for better mobile display -->
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle collapsed"
+							data-toggle="collapse"
+							data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+							<span class="sr-only">Toggle navigation</span> <span
+								class="icon-bar"></span> <span class="icon-bar"></span> <span
+								class="icon-bar"></span>
+						</button>
+						<a class="navbar-brand" href="#">PCDF</a>
+					</div>
+
+					<div class="collapse navbar-collapse"
+						id="bs-example-navbar-collapse-1">
+						<ul class="nav navbar-nav">
+							<li jsf:rendered="#{loginController.usuario.isAdministrador()}"
+								class="dropdown"><a href="#" class="dropdown-toggle"
+								data-toggle="dropdown" role="button" aria-haspopup="true"
+								aria-expanded="false">Usuários <span class="caret"></span></a>
+								<ul class="dropdown-menu">
+									<li><a jsf:outcome="cadastrar?faces-redirect=true">Cadastro
+									</a></li>
+									<li role="separator" class="divider"></li>
+									<li><a jsf:outcome="lista.xhtml?faces-redirect=true">Listar</a></li>
+
+								</ul></li>
+						</ul>
+						<ul class="nav navbar-nav pull-right">
+
+							<button class="btn btn-outline-success my-2 my-sm-0"
+								type="button">
+								<li><form jsf:id="perfil">
+										<h:commandLink value="Perfil" styleClass="" id="viewTests"
+											action="#{loginController.carregaPerfil}" immediate="true">
+										</h:commandLink>
+									</form></li> <a href="j_spring_security_logout"> Logout</a> <span
+									class="glyphicon glyphicon-log-out"> </span>
+							</button>
+							<!-- /.container-fluid -->
+						</ul>
+					</div>
+					<!-- /.navbar-collapse -->
+
+				</div>
+
+				<!-- /.container-fluid -->
+			</nav>
+			<div class="col-md-12">
+				<div class="">
+					<ul class="breadcrumb">
+						<li class="active">Você está aqui:</li>
+						<li class="active"><span>Usuários > Listar</span></li>
+					</ul>
+				</div>
+				
+				<div jsf:rendered="#{usuarioController.hasMessageError()}">
+					<div jsf:rendered="#{not empty facesContext.messageList}"
+						class="alert alert-danger">
+						<h:messages>
+						</h:messages>
+					</div>
+				</div>
+				<div jsf:rendered="#{usuarioController.hasMessageSuccess()}">
+					<div jsf:rendered="#{not empty facesContext.messageList}"
+						class="alert alert-success">
+						<h:messages>
+						</h:messages>
+					</div>
+				</div>
+			</div>
+			<form jsf:id="formLogin" jsf:prependId="false">
+				<h2 class="headerSign">Listar Usuários</h2>
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="sel1">Tipo Consulta:</label> <select
+								jsf:value="#{loginController.parametroSearch}"
+								class="form-control" id="sel1" size="1">
+								<f:selectItem itemValue="nome" itemLabel="NOME" />
+								<f:selectItem itemValue="login" itemLabel="CPF" />
+								<f:selectItem itemValue="cargo" itemLabel="CARGO" />
+							</select>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="sel1">Parâmetro Consulta:</label> <input type="text"
+								class="form-control" placeholder="Preencha Busca"
+								jsf:value="#{loginController.parametroVal}">
+							<f:ajax event="keyup" render="renderTable"
+								listener="#{loginController.atualizaLista}" execute="formLogin"></f:ajax>
+							<i class="glyphicon glyphicon-search"></i> </input>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-12"></div>
+				<table class="table table-striped" jsf:id="renderTable">
+					<thead>
+						<tr>
+							<th>Login</th>
+							<th>Nome</th>
+							<th>Email</th>
+							<th>Cargo</th>
+							<th>Ações</th>
+						</tr>
+					</thead>
+					<tbody>
+						<ui:repeat var="usuario" value="#{loginController.usuarios}"
+							varStatus="status">
+							<tr>
+								<td>#{usuario.login}</td>
+								<td>#{usuario.nome}</td>
+								<td>#{usuario.email}</td>
+								<td>#{usuario.cargo}</td>
+								<td><h:commandLink value="Alterar"
+										styleClass="btn btn-warning" id="viewTests"
+										action="#{loginController.carregaDetalhes}" immediate="true">
+										<f:param name="usuario" value="#{usuario.login}" />
+
+									</h:commandLink>
+									<button class="btn btn-danger" data-toggle="modal"
+										type="button" data-target="#confirm-delete" jsf:id="comecu"
+										>
+										<f:param name="usuario" value="#{usuario.login}"></f:param>
+										<f:ajax listener="#{loginController.preparaDeletar}">
+										</f:ajax>
+										Excluir
+										</button>
+										
+									 <!-- Indicates a dangerous or potentially negative action -->
+
+								</td>
+							</tr>
+						</ui:repeat>
+					</tbody>
+				</table>
+				<div class="modal fade" id="confirm-delete" role="dialog"
+					aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">Deletar Usuário</div>
+							<div class="modal-body">Deseja realmente deletar este usuário?</div>
+							<div class="modal-footer">
+								<button type="button" data-dismiss="modal"
+									class="btn btn-primary" id="delete">Cancelar</button>
+								<button type="submit"
+										jsf:action="#{loginController.remover}"
+										class="btn btn-danger">Excluir</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+			<div jsf:id="modalzinha" class="modal fade" id="modalUsuario"
+				tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+				aria-hidden="true">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLongTitle">Modal
+								title</h5>
+							<button type="button" class="close" data-dismiss="modal"
+								aria-label="Close">
+								<span aria-hidden="true"> &#215; </span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<form jsf:id="formAlteracao" jsf:prependId="false">
+								<div class="form-group">
+									<label for="cpf">CPF</label>
+									<h:inputText styleClass="form-control"
+										value="#{loginController.usuarioAlteracao.login}" />
+								</div>
+								<div class="form-group">
+									<label for="nome">Nome</label>
+									<h:inputText styleClass="form-control"
+										value="#{loginController.usuarioAlteracao.nome}" />
+								</div>
+								<div class="form-group">
+									<label for="email">Email</label>
+									<h:inputText styleClass="form-control"
+										value="#{loginController.usuarioAlteracao.email}" />
+								</div>
+								<label for="cargo">Cargo</label>
+								<div class="form-group">
+									<h:inputText styleClass="form-control"
+										value="#{loginController.usuarioAlteracao.cargo}" />
+								</div>
+								<div class="form-group">
+									<label for="sel1">Orgão:</label> <select class="form-control"
+										id="sel1">
+										<option>IML</option>
+										<option>PMDF</option>
+										<option>PF</option>
+									</select>
+								</div>
+								<button type="submit"
+									jsf:action="#{loginController.atualizar()}"
+									class=" signbuttons btn btn-primary">Atualizar</button>
+							</form>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary"
+								data-dismiss="modal">Close</button>
+							<button type="button" class="btn btn-primary">Save
+								changes</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script>
+	function renderComplete(data) {
+		if (data.status == 'success') {
+			$('#modalUsuario').modal('show');
+		}
+	}
+</script>
+</html>

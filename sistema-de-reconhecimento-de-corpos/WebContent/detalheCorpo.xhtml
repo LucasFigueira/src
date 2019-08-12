@@ -1,0 +1,899 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://xmlns.jcp.org/jstl/core">
+
+<h:head>
+	<h:outputScript library="javax.faces" name="jsf.js" target="head" />
+	<title>Detalhe Corpo</title>
+
+	<style> /*<!--  ESTILO DO MAPA -->
+	Always set the map height explicitly to define the size of the div
+	       * element that contains the map. */
+#map {
+	height: 25%;
+}
+/* Optional: Makes the sample page fill the window. */
+html, body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+</style>
+
+
+	<link rel="stylesheet"
+		href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+
+	<link rel="stylesheet" href="estilo.css" />
+	<link rel="stylesheet"
+		href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
+
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<script>
+		$(function() {
+			$("#dataChegada")
+					.datepicker(
+							{
+								dateFormat : 'dd/mm/yy',
+								dayNames : [ 'Domingo', 'Segunda', 'Terça',
+										'Quarta', 'Quinta', 'Sexta', 'Sábado' ],
+								dayNamesMin : [ 'D', 'S', 'T', 'Q', 'Q', 'S',
+										'S', 'D' ],
+								dayNamesShort : [ 'Dom', 'Seg', 'Ter', 'Qua',
+										'Qui', 'Sex', 'Sáb', 'Dom' ],
+								monthNames : [ 'Janeiro', 'Fevereiro', 'Março',
+										'Abril', 'Maio', 'Junho', 'Julho',
+										'Agosto', 'Setembro', 'Outubro',
+										'Novembro', 'Dezembro' ],
+								monthNamesShort : [ 'Jan', 'Fev', 'Mar', 'Abr',
+										'Mai', 'Jun', 'Jul', 'Ago', 'Set',
+										'Out', 'Nov', 'Dez' ],
+								nextText : 'Próximo',
+								prevText : 'Anterior'
+							});
+		});
+	</script>
+
+	<link rel="stylesheet" type="text/css" href="arq.css" />
+
+
+</h:head>
+<body jsf:id="body">
+	<div class="navbar-wrapper">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-7 col-sm-7 logo">
+					<a style="margin-left: 100px;" href=""
+						title="PCDF - Polícia Civil do Distrito Federal"><img
+						src="logo-pcdf.png"
+						title="PCDF - Polícia Civil do Distrito Federal"
+						alt="PCDF - Polícia Civil do Distrito Federal" /></a>
+				</div>
+			</div>
+			<br />
+			<nav class="navbar navbar-default"
+				style="background-color: rgb(221, 221, 221);">
+				<div class="container-fluid">
+					<!-- Brand and toggle get grouped for better mobile display -->
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle collapsed"
+							data-toggle="collapse"
+							data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+							<span class="sr-only">Toggle navigation</span> <span
+								class="icon-bar"></span> <span class="icon-bar"></span> <span
+								class="icon-bar"></span>
+						</button>
+						<a class="navbar-brand" href="#">PCDF</a>
+					</div>
+
+					<div class="collapse navbar-collapse"
+						id="bs-example-navbar-collapse-1">
+						<ul class="nav navbar-nav">
+							<li jsf:rendered="#{loginController.usuario.isAdministrador()}"
+								class="dropdown"><a href="#" class="dropdown-toggle"
+								data-toggle="dropdown" role="button" aria-haspopup="true"
+								aria-expanded="false">Usuários <span class="caret"></span></a>
+								<ul class="dropdown-menu">
+									<li><a jsf:outcome="cadastrar?faces-redirect=true">Cadastro
+									</a></li>
+									<li role="separator" class="divider"></li>
+									<li><a jsf:outcome="lista.xhtml?faces-redirect=true">Listar</a></li>
+
+								</ul></li>
+						</ul>
+						<ul class="nav navbar-nav">
+							<li class="dropdown"><a href="#" class="dropdown-toggle"
+								data-toggle="dropdown" role="button" aria-haspopup="true"
+								aria-expanded="false">Corpos<span class="caret"></span></a>
+								<ul class="dropdown-menu">
+									<li jsf:rendered="#{loginController.usuario.isPerito()}"><a
+										jsf:outcome="cadastrarCorpos.xhtml?faces-redirect=true">Cadastro
+									</a></li>
+									<li role="separator" class="divider"
+										jsf:rendered="#{loginController.usuario.isPerito()}"></li>
+									<li><a href="pesquisaCorpos.xhtml">Busca</a></li>
+									<li jsf:rendered="#{loginController.usuario.isPerito()}"
+										role="separator" class="divider"></li>
+									<li jsf:rendered="#{loginController.usuario.isPerito()}"><a
+										href="listaCorposHistoricos.xhtml">Busca Historica</a></li>
+									<li jsf:rendered="#{loginController.usuario.isPerito()}"
+										role="separator" class="divider"></li>
+									<li jsf:rendered="#{loginController.usuario.isPerito()}"><a
+										href="listaCorposIdentificados.xhtml">Busca Identificados</a></li>
+								</ul></li>
+						</ul>
+						<ul class="nav navbar-nav">
+							<li class="dropdown"
+								jsf:rendered="#{loginController.usuario.isPerito()}"><a
+								href="#" class="dropdown-toggle" data-toggle="dropdown"
+								role="button" aria-haspopup="true" aria-expanded="false">Ossada<span
+									class="caret"></span></a>
+								<ul class="dropdown-menu">
+									<li jsf:rendered="#{loginController.usuario.isPerito()}"><a
+										jsf:outcome="cadastrarOssada.xhtml?faces-redirect=true">Cadastro
+									</a></li>
+									<li role="separator" class="divider"></li>
+									<li jsf:rendered="#{loginController.usuario.isPerito()}"><a
+										href="listaOssada.xhtml">Busca</a></li>
+								</ul></li>
+						</ul>
+						<ul class="nav navbar-nav pull-right">
+
+							<button class="btn btn-outline-success my-2 my-sm-0"
+								type="button">
+								<li><form jsf:id="perfil">
+										<h:commandLink value="Perfil" styleClass="" id="viewTests"
+											action="#{loginController.carregaPerfil}" immediate="true">
+										</h:commandLink>
+									</form></li> <a href="j_spring_security_logout"> Logout</a> <span
+									class="glyphicon glyphicon-log-out"> </span>
+							</button>
+							<!-- /.container-fluid -->
+						</ul>
+
+
+					</div>
+					<!-- /.navbar-collapse -->
+				</div>
+				<!-- /.container-fluid -->
+			</nav>
+			<div class="col-md-12">
+				<div class="">
+					<ul class="breadcrumb">
+						<li class="active">Você está aqui:</li>
+						<li class="active"><span>Corpos > Detalhar </span></li>
+					</ul>
+				</div>
+				<div jsf:rendered="#{usuarioController.hasMessageError()}">
+					<div jsf:rendered="#{not empty facesContext.messageList}"
+						class="alert alert-danger">
+						<h:messages>
+						</h:messages>
+					</div>
+				</div>
+				<div jsf:rendered="#{usuarioController.hasMessageSuccess()}">
+					<div jsf:rendered="#{not empty facesContext.messageList}"
+						class="alert alert-success">
+						<h:messages>
+						</h:messages>
+					</div>
+				</div>
+			</div>
+
+
+			<form jsf:id="formCadastro" jsf:prependId="false"
+				enctype="multipart/form-data">
+				<h3 class="headerSign">Detalhamento do Corpo
+					Nº#{sessionCorpoController.corpo.codigoCorpo}</h3>
+				<div class="col-md-offset-2">
+					<div class="row col-md-8 registeration">
+						<div class="registerInner">
+							<div class="row">
+								<div class="col-md-12">
+									<div
+										style="display: #{sessionCorpoController.corpo.identificado== 1? 'block': 'none'}"
+										class="alert alert-warning" id="divIdentificarCorpo"
+										role="alert">Corpo Identificado! Favor se direcionar ao
+										IML ou nos contatar a partir do número: (61) 3207-4812</div>
+								</div>
+							</div>
+							<br> </br>
+							<div class="row">
+								<!--  <div class="col-md-12">-->
+								<div class="col-md-4">
+									<div class="form-group">
+										<label for="sel1">Altura:</label> <input name="altura"
+											type="text" disabled="true"
+											jsf:value="#{sessionCorpoController.corpo.altura}"
+											class="form-control" id="altura" />
+
+										<h:inputHidden name="altura" type="text"
+											value="#{sessionCorpoController.corpoAux.altura}"
+											class="form-control" id="alturaAux" />
+									</div>
+
+									<div class="form-group">
+										<h:inputHidden name="identificado" type="text"
+											value="#{sessionCorpoController.corpo.identificado}"
+											class="form-control" id="identificado" />
+
+									</div>
+
+
+								</div>
+								<div class="col-md-4">
+									<div class="form-group">
+										<label for="sel1">Cor dos Olhos:</label>
+										<!-- <select disabled="true"
+							class="form-control" id="corOlhos">
+							<option>#{sessionCorpoController.corpo.corOlhos}</option>
+
+						</select> -->
+
+										<h:selectOneMenu class="form-control" id="corOlhos"
+											disabled="true"
+											value="#{requestCorpoController.corpo.corOlhos}">
+											<f:selectItem
+												itemLabel="#{sessionCorpoController.corpo.corOlhos}"
+												itemValue="#{sessionCorpoController.corpo.corOlhos}"></f:selectItem>
+
+											<f:selectItem itemLabel="Escolha" itemValue=""></f:selectItem>
+											<f:selectItem itemLabel="Azuis" itemValue="Azuis"></f:selectItem>
+											<f:selectItem itemLabel="Castanhos" itemValue="Castanhos"></f:selectItem>
+											<f:selectItem itemLabel="Pretos" itemValue="Pretos"></f:selectItem>
+											<f:selectItem itemLabel="Verdes" itemValue="Verdes"></f:selectItem>
+											<f:selectItem itemLabel="Indefinido" itemValue="Indefinido"></f:selectItem>
+										</h:selectOneMenu>
+
+										<h:inputHidden name="corOlhos" type="text"
+											value="#{sessionCorpoController.corpoAux.corOlhos}"
+											class="form-control" id="corOlhosAux" />
+									</div>
+
+								</div>
+								<div class="col-md-4">
+									<div class="form-group">
+										<label for="sel1">Cor da pele:</label>
+										<h:selectOneMenu class="form-control" id="corPele"
+											value="#{requestCorpoController.corpo.corPele}"
+											disabled="true">
+											<f:selectItem
+												itemLabel="#{sessionCorpoController.corpo.corPele}"
+												itemValue="#{sessionCorpoController.corpo.corPele}"></f:selectItem>
+
+											<f:selectItem itemLabel="Escolha" itemValue=""></f:selectItem>
+										<f:selectItem itemLabel="Amarelo" itemValue="Amarelo"></f:selectItem>
+										<f:selectItem itemLabel="Caucasiano" itemValue="Caucasiano"></f:selectItem>
+										<f:selectItem itemLabel="Negro" itemValue="Negro"></f:selectItem>
+										<f:selectItem itemLabel="Pardo" itemValue="Pardo"></f:selectItem>
+										<f:selectItem itemLabel="Indefinido" itemValue="Indefinido"></f:selectItem>
+										</h:selectOneMenu>
+									</div>
+									<h:inputHidden name="corPele" type="text"
+										value="#{sessionCorpoController.corpoAux.corPele}"
+										class="form-control" id="corPeleAux" />
+								</div>
+								<!--  </div>-->
+							</div>
+							<div class="row">
+								<div class="col-md-4">
+									<div class="form-group">
+										<label for="sel1">Cor do Cabelo:</label>
+										<h:selectOneMenu class="form-control" id="corCabelo"
+											value="#{requestCorpoController.corpo.corCabelo}"
+											disabled="true">
+											<f:selectItem
+												itemLabel="#{sessionCorpoController.corpo.corCabelo}"
+												itemValue="#{sessionCorpoController.corpo.corCabelo}"></f:selectItem>
+
+											<f:selectItem itemLabel="Calvo" itemValue="Calvo"></f:selectItem>
+											<f:selectItem itemLabel="Grisalho" itemValue="Grisalho"></f:selectItem>
+											<f:selectItem itemLabel="Loiro" itemValue="Loiro"></f:selectItem>
+											<f:selectItem itemLabel="Preto" itemValue="Preto"></f:selectItem>
+											<f:selectItem itemLabel="Ruivo" itemValue="Ruivo"></f:selectItem>
+											<f:selectItem itemLabel="Indefinido" itemValue="Indefinido"></f:selectItem>
+										</h:selectOneMenu>
+									</div>
+									<h:inputHidden name="corCabelo" type="text"
+										value="#{sessionCorpoController.corpoAux.corCabelo}"
+										class="form-control" id="corCabeloAux" />
+								</div>
+								<div class="col-md-4">
+									<div class="form-group">
+										<label for="sel1">Tipo do Cabelo:</label>
+										<h:selectOneMenu class="form-control" id="tipoCabelo"
+											value="#{requestCorpoController.corpo.tipoCabelo}"
+											disabled="true">
+											<f:selectItem
+												itemLabel="#{sessionCorpoController.corpo.tipoCabelo}"
+												itemValue="#{sessionCorpoController.corpo.tipoCabelo}"></f:selectItem>
+
+											<f:selectItem itemLabel="Liso" itemValue="Liso"></f:selectItem>
+											<f:selectItem itemLabel="Ondulado" itemValue="Ondulado"></f:selectItem>
+											<f:selectItem itemLabel="Cacheado" itemValue="Cacheado"></f:selectItem>
+											<f:selectItem itemLabel="Crespo" itemValue="Crespo"></f:selectItem>
+											<f:selectItem itemLabel="Indefinido" itemValue="Indefinido"></f:selectItem>
+										</h:selectOneMenu>
+									</div>
+									<h:inputHidden name="tipoCabelo" type="text"
+										value="#{sessionCorpoController.corpoAux.tipoCabelo}"
+										class="form-control" id="tipoCabeloAux" />
+								</div>
+								<div class="col-md-4">
+									<!-- <div class="col-md-3"> -->
+									<div class="form-group">
+										<label for="sel1">Faixa Etária:</label>
+										<h:selectOneMenu class="form-control" id="faixaEtaria"
+											value="#{requestCorpoController.corpo.faixaEtaria}"
+											disabled="true">
+											<f:selectItem
+												itemLabel="#{sessionCorpoController.corpo.faixaEtaria}"
+												itemValue="#{sessionCorpoController.corpo.faixaEtaria}"></f:selectItem>
+											<f:selectItem itemLabel="Escolha" itemValue=""></f:selectItem>
+											<f:selectItem itemLabel="Crianca" itemValue="Crianca"></f:selectItem>
+											<f:selectItem itemLabel="Jovem" itemValue="Jovem"></f:selectItem>
+											<f:selectItem itemLabel="Adulto" itemValue="Adulto"></f:selectItem>
+											<f:selectItem itemLabel="Idoso" itemValue="Idoso"></f:selectItem>
+											<f:selectItem itemLabel="Indefinido" itemValue="Indefinido"></f:selectItem>
+										</h:selectOneMenu>
+
+										<h:inputHidden name="faixaEtaria" type="text"
+											value="#{sessionCorpoController.corpoAux.faixaEtaria}"
+											class="form-control" id="faixaEtariaAux" />
+									</div>
+
+									<!--</div>  -->
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-4">
+									<div class="form-group">
+										<label for="usr">Peso:</label> <input type="text"
+											disabled="true" value="#{sessionCorpoController.corpo.peso}"
+											class="form-control" id="peso" />
+
+										<h:inputHidden name="peso" type="text"
+											value="#{sessionCorpoController.corpoAux.peso}"
+											class="form-control" id="pesoAux" />
+									</div>
+
+								</div>
+
+								<div>
+									<div class="col-md-4">
+										<label for="usr">Data Chegada:</label>
+										<div class="input-group">
+
+											<input type="text" disabled="true"
+												value="#{sessionCorpoController.corpo.dataChegada}"
+												class="form-control" id="dataChegada" /> <span
+												class="input-group-addon"><i
+												class="glyphicon glyphicon-calendar"></i></span>
+
+											<h:inputHidden name="dataChegada" type="text"
+												value="#{sessionCorpoController.corpoAux.dataChegada}"
+												class="form-control" id="dataChegadaAux" />
+
+										</div>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<label for="usr">Hora:</label>
+									<div class="input-group">
+
+
+										<span class="input-group-addon">Hora</span><input type="text"
+											disabled="true"
+											value="#{sessionCorpoController.corpo.horarioChegada}"
+											class="form-control" id="horaChegada" />
+
+										<h:inputHidden name="dataChegada" type="text"
+											value="#{sessionCorpoController.corpoAux.horarioChegada}"
+											class="form-control" id="horarioChegadaAux" />
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-12">
+									<div class="form-group">
+										<label for="selectOlhos">Sexo:</label>
+										<h:panelGroup id="search-options1" layout="block"
+											styleClass="radioButtonSpace">
+											<h:selectOneRadio style="margin-left:0px;"
+												value="#{sessionCorpoController.corpo.sexo}" disabled="true"
+												id="sexo">
+												<f:selectItem itemValue="Feminino" itemLabel="Feminino" />
+												<f:selectItem itemValue="Masculino" itemLabel="Masculino" />
+											</h:selectOneRadio>
+										</h:panelGroup>
+										<h:inputHidden name="sexo"
+											value="#{sessionCorpoController.corpoAux.sexo}"
+											class="form-control" id="sexoAux" />
+									</div>
+								</div>
+							</div>
+
+
+							<div class="form-group">
+								<label for="sel1">Tatuagens:</label>
+								<div class="row">
+									<div class="col-md-2">
+										<label for="sel1" style="padding-right: 10px;">Rosto</label>
+										<h:selectBooleanCheckbox
+											selected="#{sessionCorpoController.tattooAux.rosto}"
+											disabled="true" id="tattooRosto" />
+
+										<h:inputHidden name="tattoo"
+											value="#{sessionCorpoController.tatuagemAuxB.rosto}"
+											class="form-control" id="tattooRostoAux" />
+									</div>
+									<div class="col-md-2">
+										<label for="sel1" style="padding-right: 10px;">Peito</label>
+										<h:selectBooleanCheckbox
+											value="#{requestCorpoController.tattoPeito}"
+											selected="#{sessionCorpoController.tattooAux.peito}"
+											disabled="true" id="tattooPeito" />
+
+										<h:inputHidden name="tattoo"
+											value="#{sessionCorpoController.tatuagemAuxB.peito}"
+											class="form-control" id="tattooPeitoAux" />
+									</div>
+									<div class="col-md-2">
+										<label for="sel1" style="padding-right: 10px;">Costas</label>
+										<h:selectBooleanCheckbox
+											value="#{requestCorpoController.tattoCostas}"
+											selected="#{sessionCorpoController.tattooAux.costas}"
+											disabled="true" id="tattooCostas" />
+
+										<h:inputHidden name="tattoo"
+											value="#{sessionCorpoController.tatuagemAuxB.costas}"
+											class="form-control" id="tattooCostasAux" />
+									</div>
+									<div class="col-md-2">
+										<label for="sel1" style="padding-right: 10px;">Braco</label>
+										<h:selectBooleanCheckbox
+											value="#{requestCorpoController.tattoBraco}"
+											selected="#{sessionCorpoController.tattooAux.braco}"
+											disabled="true" id="tattooBraco" />
+
+										<h:inputHidden name="tattoo"
+											value="#{sessionCorpoController.tatuagemAuxB.braco}"
+											class="form-control" id="tattooBracoAux" />
+									</div>
+									<div class="col-md-2">
+										<label for="sel1" style="padding-right: 10px;">Perna</label>
+										<h:selectBooleanCheckbox
+											value="#{requestCorpoController.tattoPerna}"
+											selected="#{sessionCorpoController.tattooAux.perna}"
+											disabled="true" id="tattooPerna" />
+
+										<h:inputHidden name="tattoo"
+											value="#{sessionCorpoController.tatuagemAuxB.perna}"
+											class="form-control" id="tattooPernaAux" />
+									</div>
+									<div class="col-md-2">
+										<label for="sel1" style="padding-right: 10px;">Pé</label>
+										<h:selectBooleanCheckbox
+											value="#{requestCorpoController.tattoPe}"
+											selected="#{sessionCorpoController.tattooAux.pe}"
+											disabled="true" id="tattooPe" />
+
+										<h:inputHidden name="tattoo"
+											value="#{sessionCorpoController.tatuagemAuxB.pe}"
+											class="form-control" id="tattooPeAux" />
+									</div>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label for="sel1">Cicatriz:</label>
+								<div class="row">
+									<div class="col-md-2">
+										<label for="sel1" style="padding-right: 10px;">Rosto</label>
+										<h:selectBooleanCheckbox
+											value="#{requestCorpoController.cicatrizRosto}"
+											selected="#{sessionCorpoController.cicatrizAux.rosto}"
+											disabled="true" id="cicatrizRosto" />
+
+										<h:inputHidden name="cicatriz"
+											value="#{sessionCorpoController.cicatrizAuxB.rosto}"
+											class="form-control" id="cicatrizRostoAux" />
+									</div>
+									<div class="col-md-2">
+										<label for="sel1" style="padding-right: 10px;">Peito</label>
+										<h:selectBooleanCheckbox
+											value="#{requestCorpoController.cicatrizPeito}"
+											selected="#{sessionCorpoController.cicatrizAux.peito}"
+											disabled="true" id="cicatrizPeito" />
+
+										<h:inputHidden name="cicatriz"
+											value="#{sessionCorpoController.cicatrizAuxB.peito}"
+											class="form-control" id="cicatrizPeitoAux" />
+									</div>
+									<div class="col-md-2">
+										<label for="sel1" style="padding-right: 10px;">Costas</label>
+										<h:selectBooleanCheckbox
+											value="#{requestCorpoController.cicatrizCostas}"
+											selected="#{sessionCorpoController.cicatrizAux.costas}"
+											disabled="true" id="cicatrizCostas" />
+
+										<h:inputHidden name="cicatriz"
+											value="#{sessionCorpoController.cicatrizAuxB.costas}"
+											class="form-control" id="cicatrizCostasAux" />
+									</div>
+									<div class="col-md-2">
+										<label for="sel1" style="padding-right: 10px;">Braco</label>
+										<h:selectBooleanCheckbox
+											value="#{requestCorpoController.cicatrizBraco}"
+											selected="#{sessionCorpoController.cicatrizAux.braco}"
+											disabled="true" id="cicatrizBraco" />
+
+										<h:inputHidden name="cicatriz"
+											value="#{sessionCorpoController.cicatrizAuxB.braco}"
+											class="form-control" id="cicatrizBracoAux" />
+
+									</div>
+									<div class="col-md-2">
+										<label for="sel1" style="padding-right: 10px;">Perna</label>
+										<h:selectBooleanCheckbox
+											value="#{requestCorpoController.cicatrizPerna}"
+											selected="#{sessionCorpoController.cicatrizAux.perna}"
+											disabled="true" id="cicatrizPerna" />
+
+										<h:inputHidden name="cicatriz"
+											value="#{sessionCorpoController.cicatrizAuxB.perna}"
+											class="form-control" id="cicatrizPernaAux" />
+									</div>
+									<div class="col-md-2">
+										<label for="sel1" style="padding-right: 10px;">Pé</label>
+										<h:selectBooleanCheckbox
+											value="#{requestCorpoController.cicatrizPe}"
+											selected="#{sessionCorpoController.cicatrizAux.pe}"
+											disabled="true" id="cicatrizPe" />
+
+										<h:inputHidden name="cicatriz"
+											value="#{sessionCorpoController.cicatrizAuxB.pe}"
+											class="form-control" id="cicatrizPeAux" />
+									</div>
+								</div>
+							</div>
+
+							<!--              INICIO - MANIPULAÇÃO DO MAPA A PARTIR DA GOOGLE MAPS API                        -->
+
+							<label
+								jsf:rendered="#{sessionCorpoController.corpo.latitude != null}"
+								for="local1">Local de Encontro do Corpo:</label>
+							<div id="map" style="border-top: 5px solid #2196f3"
+								jsf:rendered="#{sessionCorpoController.corpo.latitude != null}"></div>
+							<script>
+								function initMap() {
+
+									var loc = new google.maps.LatLng(
+											document
+													.getElementById('latitudeAux').value,
+											document
+													.getElementById('longitudeAux').value);
+
+									var map = new google.maps.Map(
+											document.getElementById('map'),
+											{
+												zoom : 12,
+												center : loc,
+												mapTypeControl : true,
+												mapTypeControlOptions : {
+													style : google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+													position : google.maps.ControlPosition.TOP_CENTER
+												},
+												zoomControl : true,
+												zoomControlOptions : {
+													position : google.maps.ControlPosition.LEFT_CENTER
+												},
+												scaleControl : true,
+												streetViewControl : true,
+												streetViewControlOptions : {
+													position : google.maps.ControlPosition.LEFT_TOP
+												},
+												fullscreenControl : true
+											});
+									var marker = new google.maps.Marker({
+										position : loc,
+										map : map
+									});
+
+								}
+							</script>
+							<script
+								src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCkcNmGwThTMfZ7TAkOXgs-a-hp0OJpTSw&amp;callback=initMap"
+								async="" defer=""></script>
+							<h:inputHidden name="latitude" type="text"
+								value="#{sessionCorpoController.corpo.latitude}"
+								class="form-control" id="latitudeAux" />
+							<h:inputHidden name="longitude" type="text"
+								value="#{sessionCorpoController.corpo.longitude}"
+								class="form-control" id="longitudeAux" />
+							<h:outputText
+								style="font-weight: bold; display: block; visibility: hidden;"
+								escape="false" value="Quebra Linha" />
+
+							<!--               FIM - MANIPULAÇÃO DO MAPA A PARTIR DA GOOGLE MAPS API                          -->
+
+							<div class="row">
+								<div class="col-md-12">
+									<label for="comment">Destino do Corpo:</label> <input
+										type="text" disabled="true"
+										value="#{sessionCorpoController.corpo.destino}"
+										class="form-control" id="destino" />
+									<h:inputHidden name="destino" type="text"
+										value="#{sessionCorpoController.corpoAux.destino}"
+										class="form-control" id="destinoAux" />
+								</div>
+							</div>
+
+							<h:outputText
+								style="font-weight: bold; display: block; visibility: hidden;"
+								escape="false" value="Quebra Linha" />
+
+
+							<div class="row">
+								<div class="col-md-12" style="margin-bottom: 40px;">
+									<label for="comment">Observação:</label>
+									<textarea disabled="true" class="form-control" rows="5"
+										id="descricao">#{sessionCorpoController.corpo.descricao}</textarea>
+
+									<h:inputHidden name="descricao" type="text"
+										value="#{sessionCorpoController.corpoAux.descricao}"
+										class="form-control" id="descricaoAux" />
+								</div>
+							</div>
+
+
+							<button type="button" id="btnExibeOculta" class=" btn active"
+								onclick="ocultarExibir();">Exibir/Ocultar Imagens</button>
+
+
+							<br> </br>
+
+
+							<div id="dvCentro" class="wrapper" style="margin-bottom: 60px;">
+								<div id="dvConteudo" class="scroll">
+									<!-- Div na qual vamos manipular.-->
+									<div class="container" style="width: 100%;">
+										<div class="row">
+											<ui:repeat var="dirr"
+												value="#{sessionCorpoController.diretorio}" size="3"
+												varStatus="status">
+
+												<div id="#{status.index}"
+													class="imagem#{status.index} col-md-4" data-toggle="modal"
+													data-target="##{status.index}a">
+													<img
+														src="#{sessionCorpoController.diretorio.get(status.index)}"
+														id="imagem#{status.index}" alt="Imagem 1"
+														class="img-thumbnail" style="width:300; height:300;" />
+												</div>
+												<div class="modal fade" id="#{status.index}a" tabindex="-1"
+													role="dialog" aria-labelledby="exampleModalCenterTitle"
+													aria-hidden="true">
+													<div class="modal-dialog modal-dialog-centered"
+														role="document">
+														<div class="modal-content">
+															<div class="modal-header">
+																<h5 class="modal-title" id="exampleModalLongTitle">Imagem
+																	#{status.index+1}</h5>
+																<button type="button" class="close" data-dismiss="modal"
+																	aria-label="Close">
+																	<span aria-hidden="true"> </span>
+																</button>
+															</div>
+															<div class="modal-body">
+																<img
+																	src="#{sessionCorpoController.diretorio.get(status.index)}"
+																	alt="Imagem 1" class="img-thumbnail" />
+															</div>
+														</div>
+													</div>
+												</div>
+											</ui:repeat>
+
+										</div>
+										<br> </br>
+										<div class="row">
+											<ui:repeat var="dirr"
+												value="#{sessionCorpoController.diretorio}"
+												varStatus="status" size="6" offset="3">
+												<div id="#{status.index}"
+													class="imagem#{status.index} col-md-4" data-toggle="modal"
+													data-target="##{status.index}b">
+													<img
+														src="#{sessionCorpoController.diretorio.get(status.index)}"
+														id="imagem#{status.index}" alt="Imagem 1"
+														class="img-thumbnail" width="300" height="300" />
+												</div>
+												<div class="modal fade" id="#{status.index}b" tabindex="-1"
+													role="dialog" aria-labelledby="exampleModalCenterTitle"
+													aria-hidden="true">
+													<div class="modal-dialog modal-dialog-centered"
+														role="document">
+														<div class="modal-content">
+															<div class="modal-header">
+																<h5 class="modal-title" id="exampleModalLongTitle">Imagem
+																	#{status.index+1}</h5>
+																<button type="button" class="close" data-dismiss="modal"
+																	aria-label="Close">
+																	<span aria-hidden="true"> </span>
+																</button>
+															</div>
+															<div class="modal-body">
+																<img
+																	src="#{sessionCorpoController.diretorio.get(status.index)}"
+																	alt="Imagem 1" class="img-thumbnail" />
+															</div>
+														</div>
+													</div>
+												</div>
+
+											</ui:repeat>
+										</div>
+										<br> </br>
+										<div class="row">
+											<ui:repeat var="dirr"
+												value="#{sessionCorpoController.diretorio}"
+												varStatus="status" size="9" offset="6">
+												<div id="#{status.index}"
+													class="imagem#{status.index} col-md-4" data-toggle="modal"
+													data-target="##{status.index}c">
+													<img
+														src="#{sessionCorpoController.diretorio.get(status.index)}"
+														id="imagem#{status.index}" alt="Imagem 1"
+														class="img-thumbnail" width="300" height="300" />
+												</div>
+												<div class="modal fade" id="#{status.index}c" tabindex="-1"
+													role="dialog" aria-labelledby="exampleModalCenterTitle"
+													aria-hidden="true">
+													<div class="modal-dialog modal-dialog-centered"
+														role="document">
+														<div class="modal-content">
+															<div class="modal-header">
+																<h5 class="modal-title" id="exampleModalLongTitle">Imagem
+																	#{status.index+1}</h5>
+																<button type="button" class="close" data-dismiss="modal"
+																	aria-label="Close">
+																	<span aria-hidden="true"> </span>
+																</button>
+															</div>
+															<div class="modal-body">
+																<img
+																	src="#{sessionCorpoController.diretorio.get(status.index)}"
+																	alt="Imagem 1" class="img-thumbnail" />
+															</div>
+														</div>
+													</div>
+												</div>
+
+											</ui:repeat>
+										</div>
+									</div>
+
+								</div>
+							</div>
+
+
+
+
+							<button type="button" id="alterar" class="btn active"
+								onclick="alterarCorpo();"
+								jsf:rendered="#{loginController.usuario.isPerito()}">Alterar
+							</button>
+
+							<button type="button" id="confirmar" data-target="#confirm-alter"
+								data-toggle="modal" onclick="confirmarAlteracao();"
+								class="disp btn btn-success">Confirmar Alteração</button>
+
+
+							<button type="submit" id="simIdent"
+								jsf:action="#{sessionCorpoController.gerarPDF()}"
+								class="btn btn-danger"
+								style="align-items: float: right; float: right;">Gerar
+								PDF</button>
+
+
+
+
+						</div>
+
+						<button type="button" id="identificar" data-target="#ident"
+							data-toggle="modal" style="width: 100%;" class="btn btn-primary">Identificar
+							Corpo</button>
+						<h:outputText
+							style="font-weight: bold; display: block; visibility: hidden;"
+							escape="false" value="Quebra Linha" />
+						<button
+							jsf:rendered="#{sessionCorpoController.logEntity.identificado eq 1 and usuarioController.usuario.perito}"
+							type="button" id="identificarPerito" data-target="#ident1"
+							data-toggle="modal" style="width: 100%;" class="btn btn-success">Confirmar
+							Identificação Corpo</button>
+
+						<div class="modal fade" id="ident" role="dialog"
+							aria-hidden="true">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">Identificar Corpo</div>
+									<div class="modal-body">Deseja realmente identificar este
+										corpo?</div>
+									<div class="modal-footer">
+										<button type="button" data-dismiss="modal"
+											class="btn btn-danger" id="delete">Cancelar</button>
+										<button type="submit"
+											jsf:action="#{sessionCorpoController.identificar()}"
+											class="btn btn-primary">Identificar</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="modal fade" id="ident1" role="dialog"
+							aria-hidden="true">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">Identificar Corpo</div>
+									<div class="modal-body">Deseja realmente identificar este
+										corpo?</div>
+									<div class="modal-footer">
+										<button type="button" data-dismiss="modal"
+											class="btn btn-danger" id="delete">Cancelar</button>
+										<button type="submit"
+											jsf:action="#{sessionCorpoController.confirmaIdentificacao()}"
+											class="btn btn-primary">Identificar</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="modal fade" id="errado" role="dialog"
+							aria-hidden="true">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">Alterar Corpo</div>
+									<div class="modal-body">Não é possível alterar corpo,
+										todos os campos estão iguais!</div>
+									<div class="modal-footer">
+
+										<button type="button" data-dismiss="modal"
+											class="btn btn-danger" id="delete">Fechar</button>
+
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="modal fade" id="certo" role="dialog"
+							aria-hidden="true">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">Alterar Corpo</div>
+									<div class="modal-body">Deseja realmente alterar este
+										corpo?</div>
+									<div class="modal-footer">
+										<button type="button" data-dismiss="modal"
+											class="btn btn-danger" id="delete">Cancelar</button>
+										<button type="submit"
+											jsf:action="#{sessionCorpoController.alterar()}"
+											class="btn btn-primary">Alterar</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+<script src="val.js"></script>
+</html>
